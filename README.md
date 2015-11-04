@@ -17,7 +17,6 @@
 <li>Create stats system</li>
 <li>Implement controls</li>
 <li>Add music</li></ul>
-<br>
 <br>Bugs:
 <ul></ul>
 <br>BTW I'm more or less following this for the random floor generation http://gamedevelopment.tutsplus.com/tutorials/create-a-procedurally-generated-dungeon-cave-system--gamedev-10099
