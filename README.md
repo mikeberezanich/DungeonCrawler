@@ -15,8 +15,11 @@
 <li>Create stairs</li>
 <li>Create items</li>
 <li>Create stats system</li>
-<li>Implement controls</li></ul>
+<li>Implement controls</li>
+<li>Add music</li></ul>
 <br>
+<br>Bugs:
+<ul></ul>
 <br>BTW I'm more or less following this for the random floor generation http://gamedevelopment.tutsplus.com/tutorials/create-a-procedurally-generated-dungeon-cave-system--gamedev-10099
 <br>And the libgdx docs are very helpful as well
 <br>https://github.com/libgdx/libgdx/wiki
