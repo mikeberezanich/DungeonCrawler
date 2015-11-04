@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 
 public class Game implements ApplicationListener {
 	
@@ -15,15 +16,18 @@ public class Game implements ApplicationListener {
     public void create () {
     	
     	batch = new SpriteBatch();
+    	batch.begin();
+        Floor floor = new Floor(batch);
+        batch.end();
     	
     }
 
     public void render () {
     	
-    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
-        batch.begin();
-        Floor floor = new Floor(batch);
-        batch.end();
+    	if (Gdx.input.isKeyJustPressed(Keys.ANY_KEY)){
+    		//add animation code here
+    	}
+    	
     	
     }
 

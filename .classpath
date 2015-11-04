@@ -6,5 +6,8 @@
 	<classpathentry kind="lib" path="/home/mike/workspace/DungeonCrawler/libgdx/gdx-backend-lwjgl.jar"/>
 	<classpathentry kind="lib" path="/home/mike/workspace/DungeonCrawler/libgdx/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="/home/mike/workspace/DungeonCrawler/libgdx/gdx-natives.jar"/>
+	<classpathentry kind="lib" path="libgdx/extensions/gdx-box2d/gdx-box2d-gwt.jar"/>
+	<classpathentry kind="lib" path="libgdx/extensions/gdx-box2d/gdx-box2d-natives.jar"/>
+	<classpathentry kind="lib" path="libgdx/extensions/gdx-box2d/gdx-box2d.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
