@@ -1,4 +1,7 @@
 # DungeonCrawler
+<br>The libgdx docs are very helpful/necessary
+<br>https://github.com/libgdx/libgdx/wiki
+<br>
 <br>To Do List:
 <br><ul><li>Add title screen</li>
 <li>Add death screen</li>
@@ -15,5 +18,3 @@
 <li>Add music</li></ul>
 <br>Bugs:
 <ul></ul>
-<br>The libgdx docs are very helpful/necessary
-<br>https://github.com/libgdx/libgdx/wiki
