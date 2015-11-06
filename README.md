@@ -1,7 +1,4 @@
 # DungeonCrawler
-
-<br>I have got random room generation working but have not yet started on coridors to connect rooms
-<br>
 <br>To Do List:
 <br><ul><li>Add title screen</li>
 <li>Add death screen</li>
