@@ -8,7 +8,6 @@
 <li>Add high score screen</li>
 <li>Create MySQL database and create connection</li>
 <li>Make orthonographic camera</li>
-<li>Make corridors to connect rooms</li>
 <li>Make player</li>
 <li>Make enemies</li>
 <li>Create menus</li>
@@ -19,6 +18,5 @@
 <li>Add music</li></ul>
 <br>Bugs:
 <ul></ul>
-<br>BTW I'm more or less following this for the random floor generation http://gamedevelopment.tutsplus.com/tutorials/create-a-procedurally-generated-dungeon-cave-system--gamedev-10099
-<br>And the libgdx docs are very helpful as well
+<br>The libgdx docs are very helpful/necessary
 <br>https://github.com/libgdx/libgdx/wiki
