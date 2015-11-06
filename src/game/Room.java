@@ -8,7 +8,9 @@ public class Room{
 	public int x2;
 	public int y1;
 	public int y2;
-	private int tileSize = 32;
+	public int tileSize = 32;
+	public int centerX;
+	public int centerY;
 
 	//Width and height of room in terms of grid
 	public int w;
@@ -22,6 +24,8 @@ public class Room{
 		y2 = y * tileSize + h * tileSize;
 		this.w = w;
 		this.h = h;
+		centerX = (2 * x + w) / 2 * tileSize;
+		centerY = (2 * y + h) / 2 * tileSize;
 		
 	}
 	

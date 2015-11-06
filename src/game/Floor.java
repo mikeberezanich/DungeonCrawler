@@ -7,10 +7,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -19,22 +21,32 @@ public class Floor{
 	private int[][] floorLayout = new int[32][24];
 	private int tileSize = 32;
 	private Texture brickTexture = new Texture("assets/brick.png");
+	private TextureRegion brickTextureRegion = new TextureRegion(brickTexture, tileSize, tileSize);
 	private Texture dirtTexture = new Texture("assets/dirt.png");
-	
-//	private Map map = new Map();
-//	private MapLayer layer = map.getLayers().get(0);
+	TiledMap backgroundMap = new TiledMap();
+	public TiledMapTileLayer backgroundLayer = new TiledMapTileLayer(1024, 768, tileSize, tileSize);//(TiledMapTileLayer)backgroundTiledMap.getLayers().get(this);
+//	public TiledMapTileLayer backgroundLayer = (TiledMapTileLayer)backgroundMap.getLayers().get();
 //	private TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
 	
 	public Floor(Batch batch){
-		//temporary floor generation here, just fills the floor in with all walls. Will be replaced with random floor generation in future
+		//instantiates the floors array with all 1's, representing walls
+		//I think we should try to convert the floor to a tiled map but I'm having trouble doing it
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
 				floorLayout[i][j] = 1;
+//				brickTextureRegion.setRegion(i * tileSize, j * tileSize, tileSize, tileSize);
+//				StaticTiledMapTile tile = new StaticTiledMapTile(brickTextureRegion);
+//				Cell cell = new Cell();
+//				backgroundLayer.setCell(i * tileSize, j * tileSize, cell);
+//				cell.setTile(tile);
+				
 			}
 		}
 		
+//		backgroundLayer = backgroundTiledMap.getLayers());
 		this.placeRooms();
-		this.drawRooms(batch);
+		
+		this.drawFloor(batch);
 	}
 	
 	public void placeRooms() {
@@ -42,6 +54,8 @@ public class Floor{
 		Vector<Room> rooms = new Vector<Room>(50);
 		Random rng = new Random();
 		boolean failed = false;
+		int newRoomCenterX, newRoomCenterY, 
+			prevRoomCenterX = 0, prevRoomCenterY = 0;
 		
 		
 		for (int i = 0; i < 20; i++){
@@ -57,7 +71,16 @@ public class Floor{
 				}
 			if (!failed){
 				createRoom(room, rooms);
+				if (rooms.size() > 0){
+					prevRoomCenterX = rooms.lastElement().centerX;//rooms.get(rooms.size() - 2).centerX;
+					prevRoomCenterY = rooms.lastElement().centerY;//rooms.get(rooms.size() - 2).centerY;
+				}
 				rooms.add(room);
+				newRoomCenterX = room.centerX;
+				newRoomCenterY = room.centerY;
+				if (rooms.size() > 1){
+					carveCorridor(prevRoomCenterX, newRoomCenterX, prevRoomCenterY, newRoomCenterY);
+				}
 			}
 		}
 		
@@ -72,7 +95,60 @@ public class Floor{
 		}
 	}
 	
-	public void drawRooms(Batch batch){
+//	private void horizontalCorridor(int x1, int x2, int y1, int y2){
+//		int j;
+//		if (Math.min(x1, x2) == x1)
+//			j = y1/tileSize;
+//		else
+//			j = y2/tileSize;
+//		
+//		for (int i = Math.min(x1, x2)/tileSize; i < Math.max(x1, x2)/tileSize; i++){
+//			floorLayout[i][j] = 0;
+//		}
+//	}
+//	
+//	private void verticalCorridor(int x1, int x2, int y1, int y2){
+//		int i;
+//		if (Math.min(y1, y2) == y1)
+//			i = x1/tileSize;
+//		else
+//			i = x2/tileSize;
+//		
+//		for (int j = Math.max(y1, y2)/tileSize; j > Math.min(y1, y2)/tileSize; j--){
+//			floorLayout[i][j] = 0;
+//		}
+//	}
+	
+	private void carveCorridor(int prevX, int newX, int prevY, int newY){
+		
+		if (prevX < newX && prevY < newY){
+			for (int i = prevX / tileSize; i < newX / tileSize; i++)
+				floorLayout[i][prevY/tileSize] = 0;
+			for (int j = prevY / tileSize; j < newY / tileSize; j++)
+				floorLayout[newX/tileSize][j] = 0;
+		}
+		else if (prevX < newX && prevY > newY){
+			for (int i = prevX / tileSize; i < newX / tileSize; i++)
+				floorLayout[i][prevY/tileSize] = 0;
+			for (int j = newY / tileSize; j < prevY / tileSize; j++)
+				floorLayout[newX/tileSize][j] = 0;
+		}
+		else if (prevX > newX && prevY < newY){
+			for (int i = prevX / tileSize; i > newX / tileSize; i--)
+				floorLayout[i][prevY/tileSize] = 0;
+			for (int j = prevY / tileSize; j < newY / tileSize; j++)
+				floorLayout[newX/tileSize][j] = 0;
+		}
+		else {
+			for (int i = newX / tileSize; i < prevX / tileSize; i++)
+				floorLayout[i][newY/tileSize] = 0;
+			for (int j = newY / tileSize; j < prevY / tileSize; j++)
+				floorLayout[prevX/tileSize][j] = 0;
+		}
+		
+	}
+	
+	public void drawFloor(Batch batch){
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
 				if (floorLayout[i][j] == 1){
