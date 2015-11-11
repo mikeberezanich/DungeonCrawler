@@ -7,7 +7,7 @@
 <li>Add death screen</li>
 <li>Add high score screen</li>
 <li>Create MySQL database and create connection</li>
-<li>Make orthonographic camera</li>
+<li>Make camera start on player position</li>
 <li>Make player</li>
 <li>Make enemies</li>
 <li>Create menus</li>
