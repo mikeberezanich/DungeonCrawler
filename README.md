@@ -17,5 +17,4 @@
 <li>Implement controls</li>
 <li>Add music</li></ul>
 <br>Bugs:
-<li>Array out of bounds exception on character attempting to move when at edge of floor</li>
-<ul></ul>
+<ul><li>Array out of bounds exception on character attempting to move when at edge of floor</li></ul>
