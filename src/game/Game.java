@@ -21,42 +21,45 @@ public class Game implements ApplicationListener {
 	private OrthographicCamera camera;
 	private Matrix4 projection = new Matrix4();
 	public int tileSize = 32;
+	public Player player;
+	private int x;
+	private int y;
+	private int[] position;
 	
     public void create () {
 
-        floor = new Floor(batch);
+    	batch = new SpriteBatch();
+        floor = new Floor();
+        position = floor.findOpenSpace();
+        x = position[0];
+        y = position[1];
+        player = new Player(x,y,x+tileSize,y+tileSize);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
+        
     }
 
     public void render () {
-    	
-    	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-    	projection.setToOrtho(0, Gdx.graphics.getWidth()/2, 0, Gdx.graphics.getHeight()/2, -1, 1);
-    	batch = new SpriteBatch();
-        batch.begin();
-        batch.setProjectionMatrix(camera.combined);
+//    	batch.setProjectionMatrix(camera.combined);  //Comment this out for testing purposes
+//    	batch.begin();
+
+//    	projection.setToOrtho(0, Gdx.graphics.getWidth()/2, 0, Gdx.graphics.getHeight()/2, -1, 1);
+
+    	handleInput();
+    	moveCamera();
+    	camera.update();
+    	batch.setProjectionMatrix(camera.combined);
+    	batch.begin();
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);
+        position = floor.findOpenSpace();
+        player.drawPlayer(batch);
         batch.end();
-        
-    	if (Gdx.input.isKeyJustPressed(Keys.UP)){
-    		camera.position.y += tileSize;
-    		camera.update();
-    	}
-    	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
-    		camera.position.y -= tileSize;
-    		camera.update();
-    	}
-    	if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){
-    		camera.position.x += tileSize;
-    		camera.update();
-    	}
-    	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
-    		camera.position.x -= tileSize;
-    		camera.update();
-    	}
     	
+    }
+    
+    public void moveCamera(){
+    	camera.position.set(player.x1, player.y1, 0);
     }
 
     public void resize (int width, int height) {
@@ -73,5 +76,24 @@ public class Game implements ApplicationListener {
     
     public static void main(String[] args){
     	new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
+    }
+    
+    private void handleInput() {
+    	if (Gdx.input.isKeyJustPressed(Keys.UP)){
+    		camera.translate(0, tileSize, 0);
+    		player.movePlayer("up", batch, floor);
+    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
+    		camera.translate(0, -tileSize, 0);
+    		player.movePlayer("down", batch, floor);
+    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){
+    		camera.translate(tileSize, 0, 0);
+    		player.movePlayer("right", batch, floor);
+    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
+    		camera.translate(-tileSize, 0, 0);
+    		player.movePlayer("left", batch, floor);
+    	}
     }
 }

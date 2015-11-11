@@ -16,7 +16,7 @@ public class Room{
 	public int w;
 	public int h;
 	
-	Room(int x, int y, int w, int h){
+	public Room(int x, int y, int w, int h){
 		
 		x1 = x * tileSize;
 		x2 = x * tileSize + w * tileSize;

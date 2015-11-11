@@ -18,17 +18,17 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Floor{
 
-	private int[][] floorLayout = new int[32][24];
-	public int tileSize = 32;
+	public int[][] floorLayout = new int[32][24];
+	public static int tileSize = 32;
+	private Random rng = new Random();
 	private Texture brickTexture = new Texture("assets/brick.png");
-	private TextureRegion brickTextureRegion = new TextureRegion(brickTexture, tileSize, tileSize);
 	private Texture dirtTexture = new Texture("assets/dirt.png");
 	TiledMap backgroundMap = new TiledMap();
 	public TiledMapTileLayer backgroundLayer = new TiledMapTileLayer(1024, 768, tileSize, tileSize);//(TiledMapTileLayer)backgroundTiledMap.getLayers().get(this);
 //	public TiledMapTileLayer backgroundLayer = (TiledMapTileLayer)backgroundMap.getLayers().get();
 //	private TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
 	
-	public Floor(Batch batch){
+	public Floor(){
 		//instantiates the floors array with all 1's, representing walls
 		//I think we should try to convert the floor to a tiled map but I'm having trouble doing it
 		for (int i = 0; i < 32; i++){
@@ -44,7 +44,6 @@ public class Floor{
 	public void placeRooms() {
 		
 		Vector<Room> rooms = new Vector<Room>(50);
-		Random rng = new Random();
 		boolean failed = false;
 		int newRoomCenterX, newRoomCenterY, 
 			prevRoomCenterX = 0, prevRoomCenterY = 0;
@@ -63,8 +62,8 @@ public class Floor{
 			if (!failed){
 				createRoom(room, rooms);
 				if (rooms.size() > 0){
-					prevRoomCenterX = rooms.lastElement().centerX;//rooms.get(rooms.size() - 2).centerX;
-					prevRoomCenterY = rooms.lastElement().centerY;//rooms.get(rooms.size() - 2).centerY;
+					prevRoomCenterX = rooms.lastElement().centerX;
+					prevRoomCenterY = rooms.lastElement().centerY;
 				}
 				rooms.add(room);
 				newRoomCenterX = room.centerX;
@@ -126,6 +125,18 @@ public class Floor{
 				}
 			}
 		}
+	}
+	
+	public int[] findOpenSpace(){
+		int i = rng.nextInt(31);
+		int j = rng.nextInt(23);
+		
+		while (floorLayout[i][j] != 0){
+			i = rng.nextInt(31);
+			j = rng.nextInt(23);
+		}
+		
+		return new int[] {i * tileSize, j * tileSize};
 	}
 	
 }
