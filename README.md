@@ -18,4 +18,5 @@
 <li>Add music</li></ul>
 <br>Bugs:
 <ul>Array out of bounds exception on character attempting to move when at edge of floor</ul>
+<ul>Rarely, a room will not successfully get corridors carved to it</ul>
 <ul></ul>

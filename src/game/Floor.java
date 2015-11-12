@@ -3,7 +3,6 @@ package game;
 import java.util.Random;
 import java.util.Vector;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,18 +18,15 @@ import com.badlogic.gdx.physics.box2d.World;
 public class Floor{
 
 	public int[][] floorLayout = new int[32][24];
+	public Vector<Room> rooms;
 	public static int tileSize = 32;
 	private Random rng = new Random();
 	private Texture brickTexture = new Texture("assets/brick.png");
 	private Texture dirtTexture = new Texture("assets/dirt.png");
 	TiledMap backgroundMap = new TiledMap();
-	public TiledMapTileLayer backgroundLayer = new TiledMapTileLayer(1024, 768, tileSize, tileSize);//(TiledMapTileLayer)backgroundTiledMap.getLayers().get(this);
-//	public TiledMapTileLayer backgroundLayer = (TiledMapTileLayer)backgroundMap.getLayers().get();
-//	private TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
 	
 	public Floor(){
-		//instantiates the floors array with all 1's, representing walls
-		//I think we should try to convert the floor to a tiled map but I'm having trouble doing it
+	
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
 				floorLayout[i][j] = 1;
@@ -43,12 +39,12 @@ public class Floor{
 	
 	public void placeRooms() {
 		
-		Vector<Room> rooms = new Vector<Room>(50);
+		rooms = new Vector<Room>();
 		boolean failed = false;
-		int newRoomCenterX, newRoomCenterY, 
+		int newRoomCenterX, newRoomCenterY, //these are all used for corridor generation
 			prevRoomCenterX = 0, prevRoomCenterY = 0;
 		
-		for (int i = 0; i < 20; i++){
+		for (int i = 0; i < 30; i++){ //generally, as you increase i's limit, the density of rooms per floor will increase here
 			int w = 3 + rng.nextInt(5);
 			int h = 3 + rng.nextInt(5); 
 			int x = rng.nextInt(32 - w - 1) + 1;
@@ -56,10 +52,10 @@ public class Floor{
 			Room room = new Room(x, y, w, h);
 			failed = false;
 			for (int j = 0; j < rooms.size(); j++){
-				if (room.intersects(room, rooms.get(j)))
+				if (room.intersects(room, rooms.get(j))) //check if the room intersects with any rooms made thus far
 					failed = true;
 				}
-			if (!failed){
+			if (!failed){ //if the room above doesn't intercept any rooms, actually make the room
 				createRoom(room, rooms);
 				if (rooms.size() > 0){
 					prevRoomCenterX = rooms.lastElement().centerX;
@@ -77,6 +73,7 @@ public class Floor{
 		
 	}
 	
+	//carves out room in floor array
 	private void createRoom(Room room, Vector<Room> rooms){
 		for (int i = room.x1/tileSize; i <= room.x2/tileSize; i++){
 			for (int j = room.y1/tileSize; j <= room.y2/tileSize; j++){
@@ -85,6 +82,7 @@ public class Floor{
 		}
 	}
 	
+	//carves out corridor in floor array
 	private void carveCorridor(int prevX, int newX, int prevY, int newY){
 		
 		if (prevX < newX && prevY < newY){
@@ -114,6 +112,7 @@ public class Floor{
 		
 	}
 	
+	//draws the floor array to the window
 	public void drawFloor(Batch batch){
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
@@ -127,6 +126,7 @@ public class Floor{
 		}
 	}
 	
+	//can be used for finding open space to place items at, returns array of [x-coordinate, y-coordinate]
 	public int[] findOpenSpace(){
 		int i = rng.nextInt(31);
 		int j = rng.nextInt(23);

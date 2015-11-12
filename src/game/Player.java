@@ -1,6 +1,5 @@
 package game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,6 +49,11 @@ public class Player {
 	public void movePlayer(String direction, SpriteBatch batch, Floor floor){
 		if (direction == "up"){
 			
+			//reset the animations for other directions
+			downFrame = 0;
+			rightFrame = 0;
+			leftFrame = 0;
+			
 			//Code to handle the animation
 			if (upFrame == 0)
 				character.setRegion(charAnimation[1]);
@@ -73,7 +77,18 @@ public class Player {
 		}
 		else if (direction == "down"){
 			
+			//reset the animations for other directions
+			upFrame = 0;
+			rightFrame = 0;
+			leftFrame = 0;
+			boolean firstMove = true; //because the player spawns facing downwards initially
+			
 			//Code to handle the animation
+//			if (firstMove){
+//				character.setRegion(charAnimation[3]);
+//				downFrame ++;
+//				firstMove = false;
+//			}
 			if (downFrame == 0)
 				character.setRegion(charAnimation[0]);
 			else if (downFrame == 1)
@@ -94,6 +109,11 @@ public class Player {
 		}
 		else if (direction == "right"){
 			
+			//reset the animations for other directions
+			downFrame = 0;
+			upFrame = 0;
+			leftFrame = 0;
+			
 			if (rightFrame == 0)
 				character.setRegion(charAnimation[2]);
 			else if (rightFrame == 1)
@@ -113,6 +133,11 @@ public class Player {
 			}
 		}
 		else if (direction == "left"){
+			
+			//reset the animations for other directions
+			downFrame = 0;
+			upFrame = 0;
+			rightFrame = 0;
 			
 			if (leftFrame == 0){
 				character.setRegion(charAnimation[2]);

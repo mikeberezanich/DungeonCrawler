@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Random;
+
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Camera;
@@ -22,37 +24,30 @@ public class Game implements ApplicationListener {
 	private Matrix4 projection = new Matrix4();
 	public int tileSize = 32;
 	public Player player;
-	private int x;
-	private int y;
-	private int[] position;
+	private int positionRng;
+	private Random rng = new Random();
 	
     public void create () {
 
     	batch = new SpriteBatch();
         floor = new Floor();
-        position = floor.findOpenSpace();
-        x = position[0];
-        y = position[1];
-        player = new Player(x,y,x+tileSize,y+tileSize);
+        positionRng = rng.nextInt(floor.rooms.size());
+        player = new Player(floor.rooms.get(positionRng).centerX,floor.rooms.get(positionRng).centerY,floor.rooms.get(positionRng).centerX+tileSize,floor.rooms.get(positionRng).centerY+tileSize);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         
     }
 
     public void render () {
-//    	batch.setProjectionMatrix(camera.combined);  //Comment this out for testing purposes
-//    	batch.begin();
-
-//    	projection.setToOrtho(0, Gdx.graphics.getWidth()/2, 0, Gdx.graphics.getHeight()/2, -1, 1);
 
     	handleInput();
     	moveCamera();
     	camera.update();
-    	batch.setProjectionMatrix(camera.combined);
+    	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
     	batch.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);
-        position = floor.findOpenSpace();
+;
         player.drawPlayer(batch);
         batch.end();
     	
