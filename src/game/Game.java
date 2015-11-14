@@ -43,7 +43,7 @@ public class Game implements ApplicationListener {
     	handleInput();
     	moveCamera();
     	camera.update();
-//    	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
+    	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
     	batch.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);

@@ -449,6 +449,13 @@ public class Floor{
 			}
 			System.out.print(" <- " + i);
 			System.out.println();}
+		
+		for (int i = 0; i < 32; i++){
+			for (int j = 0; j < 24; j++){
+				if (floorLayout[i][j] >= 20 && floorLayout[i][j] < 27)
+					floorLayout[i][j] = 15;
+			}
+		}
 	}
 	
 	//draws the floor array to the window
