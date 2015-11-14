@@ -31,8 +31,9 @@ public class Room{
 	
 	public boolean intersects(Room room1, Room room2){
 		
-		return (room1.x1 <= room2.x2 && room1.x2 >= room2.x1 &&
-				room1.y1 <= room2.y2 && room1.y2 >= room2.y1);
+		//changed to requiring at least 1 tile between rooms, I figured this might make graphics situations slightly easier
+		return (room1.x1 <= room2.x2 + tileSize && room1.x2 + tileSize >= room2.x1 &&
+				room1.y1 <= room2.y2 + tileSize && room1.y2 + tileSize >= room2.y1);
 		
 	}
 	

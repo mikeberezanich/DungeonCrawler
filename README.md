@@ -15,5 +15,6 @@
 <li>Add music</li></ul>
 <br>Bugs:
 <ul><li>Array out of bounds exception on character attempting to move when at edge of floor</li>
-<li>Rarely, a room will not successfully get corridors carved to it</li></ul>
+<li>Rarely, a room will not successfully get corridors carved to it</li>
+<li>After changing floor graphics, an odd line is drawn across screen on resize</li></ul>
 

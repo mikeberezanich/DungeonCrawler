@@ -67,7 +67,7 @@ public class Player {
 			if (upFrame == 4) //once it gets to end of animation roll, reset
 				upFrame = 0;
 			
-			if (floor.floorLayout[x1/tileSize][y2/tileSize] == 0){
+			if (floor.floorLayout[x1/tileSize][y2/tileSize] == 15){
 				
 				character.translateY(tileSize);
 				y1 += tileSize;
@@ -81,14 +81,8 @@ public class Player {
 			upFrame = 0;
 			rightFrame = 0;
 			leftFrame = 0;
-			boolean firstMove = true; //because the player spawns facing downwards initially
 			
 			//Code to handle the animation
-//			if (firstMove){
-//				character.setRegion(charAnimation[3]);
-//				downFrame ++;
-//				firstMove = false;
-//			}
 			if (downFrame == 0)
 				character.setRegion(charAnimation[0]);
 			else if (downFrame == 1)
@@ -101,7 +95,7 @@ public class Player {
 			if (downFrame == 4) //once it gets to end of animation roll, reset
 				downFrame = 0;
 			
-			if (floor.floorLayout[x1/tileSize][y1/tileSize - 1] == 0){
+			if (floor.floorLayout[x1/tileSize][y1/tileSize - 1] == 15){
 				character.translateY(-tileSize);
 				y1 -= tileSize;
 				y2 -= tileSize;
@@ -126,7 +120,7 @@ public class Player {
 			if (rightFrame == 4) //once it gets to end of animation roll, reset
 				rightFrame = 0;
 			
-			if (floor.floorLayout[x2/tileSize][y1/tileSize] == 0){
+			if (floor.floorLayout[x2/tileSize][y1/tileSize] == 15){
 				character.translateX(tileSize);
 				x1 += tileSize;
 				x2 += tileSize;
@@ -159,7 +153,7 @@ public class Player {
 			if (leftFrame == 4) //once it gets to end of animation roll, reset
 				leftFrame = 0;
 			
-			if (floor.floorLayout[x1/tileSize - 1][y1/tileSize] == 0){
+			if (floor.floorLayout[x1/tileSize - 1][y1/tileSize] == 15){
 				character.translateX(-tileSize);
 				x1 -= tileSize;
 				x2 -= tileSize;
