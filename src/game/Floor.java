@@ -58,7 +58,7 @@ public class Floor{
 		int newRoomCenterX, newRoomCenterY, //these are all used for corridor generation
 			prevRoomCenterX = 0, prevRoomCenterY = 0;
 		
-		for (int i = 0; i < 50; i++){ //generally, as you increase i's limit, the density of rooms per floor will increase here
+		for (int i = 0; i < 100; i++){ //generally, as you increase i's limit, the density of rooms per floor will increase here
 			int w = 4 + rng.nextInt(5);
 			int h = 4 + rng.nextInt(5); 
 			int x = rng.nextInt(32 - w - 1) + 1;
@@ -289,15 +289,15 @@ public class Floor{
 					if (floorLayout[i-1][j] == 16)
 						floorLayout[i-1][j] = 10;
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
-						floorLayout[i+1][j+1] = 11;
+						floorLayout[i+1][j+1] = 11; //this doesn't seem to work for some reason
+					if (floorLayout[i+1][j] == 11 && floorLayout[i][j-1] == 8 && floorLayout[i+1][j-1] != 11)
+						floorLayout[i+1][j+1] = 14;
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j-1] < 7 && floorLayout[i+1][j-1] != 11)
 						floorLayout[i+1][j-1] = 14;
 					if (floorLayout[i-1][j] == 10 && floorLayout[i][j-1] < 8)
-						floorLayout[i-1][j-1] = 13;
+						floorLayout[i-1][j-1] = 13; //this doesn't seem to work for some reason
 					if (floorLayout[i][j-1] == 10)
 						floorLayout[i][j-1] = 7;
-					if (floorLayout[i-1][j] == 10 && floorLayout[i][j-1] < 7)
-						floorLayout[i-1][j-1] = 13;
 					if (floorLayout[i-1][j-1] < 7 && floorLayout[i-1][j-2] == 10)
 						floorLayout[i-1][j-1] = 7;
 					if (floorLayout[i+1][j-1] < 7 && floorLayout[i+1][j-2] == 11)
@@ -334,7 +334,21 @@ public class Floor{
 						floorLayout[i-1][j] = 12;
 					if (floorLayout[i+1][j] == 10)
 						floorLayout[i+1][j] = 12;
-			
+					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 16){
+						floorLayout[i-1][j-1] = 9;
+						floorLayout[i-1][j-2] = 12;
+					}
+					if (floorLayout[i+1][j] == 13)
+						floorLayout[i+1][j] = 17;
+					if (floorLayout[i-1][j] < 7 && (floorLayout[i-1][j-1] == 10 || floorLayout[i-1][j-1] < 7))
+						floorLayout[i-1][j] = 7;	
+					if (floorLayout[i-1][j-1] < 7 && floorLayout[i-1][j-2] < 7)
+						floorLayout[i-1][j-1] = 7;
+					if (floorLayout[i+1][j-1] < 7 && floorLayout[i+1][j-2] < 7)
+						floorLayout[i+1][j-1] = 8;
+					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 12)
+						floorLayout[i-1][j-1] = 9;
+					
 				}
 				else if (floorLayout[i][j] == 20){
 					if (floorLayout[i-1][j] == 16)
@@ -344,7 +358,10 @@ public class Floor{
 					if (floorLayout[i-1][j] == 11)
 						floorLayout[i-1][j] = 12;
 					if (floorLayout[i+1][j] == 10)
-						floorLayout[i+1][j] = 12;
+						if (floorLayout[i+1][j+1] == 15 || floorLayout[i+1][j+1] == 23 || floorLayout[i+1][j+1] == 25)
+							floorLayout[i+1][j] = rng.nextInt(7);
+						else
+							floorLayout[i+1][j] = 12;
 					if (floorLayout[i-1][j] == 13)
 						floorLayout[i-1][j] = 10;
 					if (floorLayout[i+1][j] == 14)
@@ -371,16 +388,28 @@ public class Floor{
 						floorLayout[i+1][j] = 8;
 					if (floorLayout[i-1][j] == 22 && floorLayout[i-1][j-1] == 10)
 						floorLayout[i-1][j] = 7;
+					if (floorLayout[i-1][j] == 8 && floorLayout[i-1][j-1] == 16){
+						floorLayout[i-1][j] = 9;
+						floorLayout[i-1][j-1] = 12;
+					}
+					if (floorLayout[i+1][j] == 8 && (floorLayout[i+2][j] == 20 || floorLayout[i+2][j] == 22)){
+						floorLayout[i+1][j] = 9;
+					}
+					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 12)
+						floorLayout[i-1][j-1] = 9;
 				}
 				else if (floorLayout[i][j] == 21){
-					
+					if (floorLayout[i+1][j] < 7 && floorLayout[i+1][j+1] < 7)
+						floorLayout[i+1][j+1] = 8;
 				}
 				else if (floorLayout[i][j] == 22){
 					if (floorLayout[i-1][j] < 7 && floorLayout[i-2][j] == 15 )
 						floorLayout[i-1][j] = 9;
-					if (floorLayout[i-1][j] < 7)
+					if (floorLayout[i-1][j] < 7 && floorLayout[i-1][j-1] == 10)
 						floorLayout[i-1][j] = 7;
-					if (floorLayout[i+1][j] < 7)
+					if (floorLayout[i-1][j] < 7 && floorLayout[i-1][j-1] < 10)
+						floorLayout[i-1][j] = 7;
+					if (floorLayout[i+1][j] < 7 && (floorLayout[i+1][j-1] == 11 || floorLayout[i+1][j-1] < 7))
 						floorLayout[i+1][j] = 8;
 				}
 				else if (floorLayout[i][j] == 23){
@@ -400,10 +429,16 @@ public class Floor{
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 14)
 						floorLayout[i][j+1] = rng.nextInt(7);
-					if (floorLayout[i][j+1] == 8)
-						floorLayout[i][j+1] = rng.nextInt(7);
+//					if (floorLayout[i][j+1] == 8)
+//						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] == 11)
 						floorLayout[i][j-1] = 8;
+					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] == 14)
+						floorLayout[i][j-1] = 8;
+					if (floorLayout[i][j-1] == 14)
+						floorLayout[i][j-1] = rng.nextInt(7);
+					if (floorLayout[i][j-1] == 13)
+						floorLayout[i][j-1] = rng.nextInt(7);
 				}
 				else if (floorLayout[i][j] == 24){
 					if (floorLayout[i][j-1] == 11)
@@ -418,6 +453,8 @@ public class Floor{
 						floorLayout[i][j-1] = 8;
 					if (floorLayout[i][j+1] == 16)
 						floorLayout[i][j+1] = rng.nextInt(7);
+					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
+						floorLayout[i+1][j+1] = 11;
 				}
 				else if (floorLayout[i][j] == 25){
 					if (floorLayout[i][j-1] == 10)
@@ -427,6 +464,8 @@ public class Floor{
 					if (floorLayout[i][j-1] == 13)
 						floorLayout[i][j-1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 16)
+						floorLayout[i][j+1] = rng.nextInt(7);
+					if (floorLayout[i][j+1] == 12)
 						floorLayout[i][j+1] = rng.nextInt(7);
 				}
 				
@@ -450,12 +489,36 @@ public class Floor{
 			System.out.print(" <- " + i);
 			System.out.println();}
 		
+		//this changes all the corridor tiles in the array to floor tiles to allow the character to walk on them
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
 				if (floorLayout[i][j] >= 20 && floorLayout[i][j] < 27)
 					floorLayout[i][j] = 15;
 			}
 		}
+		
+		//this should hopefully alleviate a couple glitches caused with the corridor system
+		for (int i = 0; i < 32; i++){
+			for (int j = 0; j < 24; j++){
+				if (j != 0 && i != 0 && i != 31 && floorLayout[i][j] == 28 && floorLayout[i][j-1] == 15){
+					floorLayout[i][j] = 15;
+					if (floorLayout[i-1][j-1] == 10 || floorLayout[i-1][j-1] < 7)
+						floorLayout[i-1][j] = 7;
+					else if (floorLayout[i+1][j-1] == 10 || floorLayout[i+1][j-1] < 7)
+						floorLayout[i+1][j] = 8;
+				}
+				if (floorLayout[i][j] == 28){
+					if (floorLayout[i][j-1] == 10)
+						floorLayout[i][j] = 7;
+					else if (floorLayout[i][j-1] == 11)
+						floorLayout[i][j] = 8;
+				}
+				if (j != 23 && floorLayout[i][j] == 27 && floorLayout[i][j+1] == 15){
+					floorLayout[i][j] = 15;
+				}
+			}
+		}
+		
 	}
 	
 	//draws the floor array to the window
@@ -478,6 +541,9 @@ public class Floor{
 				}
 				else if (floorLayout[i][j] == 8){
 					batch.draw(floorTiles[8], i * tileSize, j * tileSize, tileSize, tileSize);
+				}
+				else if (floorLayout[i][j] == 9){
+					batch.draw(floorTiles[9], i * tileSize, j * tileSize, tileSize, tileSize);
 				}
 				else if (floorLayout[i][j] == 10){
 					batch.draw(floorTiles[10], i * tileSize, j * tileSize, tileSize, tileSize);
@@ -508,9 +574,6 @@ public class Floor{
 				}
 				else if (floorLayout[i][j] == 28){
 					batch.draw(floorTiles[0], i * tileSize, j * tileSize, tileSize, tileSize);
-				}
-				else{
-					batch.draw(floorTiles[15], i * tileSize, j * tileSize, tileSize, tileSize);
 				}
 				
 			}

@@ -14,7 +14,8 @@
 <li>Create stats system</li>
 <li>Add music</li></ul>
 <br>Bugs:
-<ul><li>Array out of bounds exception on character attempting to move when at edge of floor</li>
-<li>Rarely, a room will not successfully get corridors carved to it</li>
-<li>After changing floor graphics, an odd line is drawn across screen on resize</li></ul>
+<ul>
+<li>Rarely, a room will not successfully get corridors carved to it (If we cannot fix this, perhaps we have teleportation orb item that transports the player to the stairs. We can start the player with a couple and have them sometimes spawn on the floor)</li>
+<li>After changing floor graphics, an odd line is drawn across screen on resize</li>
+<li>Some floor rendering errors</li></ul>
 
