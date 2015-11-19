@@ -1,5 +1,7 @@
 package game;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Random;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -26,6 +28,7 @@ public class Game implements ApplicationListener {
 	public Player player;
 	private int positionRng;
 	private Random rng = new Random();
+	public Connection connection;
 	
     public void create () {
 
@@ -35,7 +38,11 @@ public class Game implements ApplicationListener {
         player = new Player(floor.rooms.get(positionRng).centerX,floor.rooms.get(positionRng).centerY,floor.rooms.get(positionRng).centerX+tileSize,floor.rooms.get(positionRng).centerY+tileSize);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-        
+        try {
+			connection = new DatabaseConnection().connect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
     public void render () {
@@ -43,7 +50,7 @@ public class Game implements ApplicationListener {
     	handleInput();
     	moveCamera();
     	camera.update();
-//    	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
+    	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
     	batch.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);
