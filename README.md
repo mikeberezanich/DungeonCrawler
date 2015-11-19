@@ -6,7 +6,6 @@
 <ul><li>Add title screen</li>
 <li>Add death screen</li>
 <li>Add high score screen</li>
-<li>Create MySQL database and create connection</li>
 <li>Make enemies</li>
 <li>Create menus</li>
 <li>Create stairs</li>
