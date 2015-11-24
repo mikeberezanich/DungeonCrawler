@@ -23,7 +23,9 @@ public class Player {
 	private int upFrame = 0;
 	private int rightFrame = 0;
 	private int leftFrame = 0;
-	public int tileSize = 32;
+	public static final int TILE_SIZE = 32;
+	public static final int FLOOR_TILE = 15;
+	public static final int STAIR_TILE = 30;
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -34,7 +36,7 @@ public class Player {
 		int k = 0;
 		for (int i = 0; i < 3; i++){
 			for (int j = 1; j < 4; j++){
-				charAnimation[k] = new TextureRegion(charTexture, i * tileSize, j * tileSize, tileSize, tileSize);
+				charAnimation[k] = new TextureRegion(charTexture, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				k++;
 			}
 		}
@@ -67,11 +69,20 @@ public class Player {
 			if (upFrame == 4) //once it gets to end of animation roll, reset
 				upFrame = 0;
 			
-			if (floor.floorLayout[x1/tileSize][y2/tileSize] == 15){
+			if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == FLOOR_TILE){
 				
-				character.translateY(tileSize);
-				y1 += tileSize;
-				y2 += tileSize;
+				character.translateY(TILE_SIZE);
+				y1 += TILE_SIZE;
+				y2 += TILE_SIZE;
+				
+			}
+			
+			if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == STAIR_TILE){
+				
+				character.translateY(TILE_SIZE);
+				y1 += TILE_SIZE;
+				y2 += TILE_SIZE;
+//				Floor nextFloor = new Floor();
 				
 			}
 		}
@@ -95,10 +106,10 @@ public class Player {
 			if (downFrame == 4) //once it gets to end of animation roll, reset
 				downFrame = 0;
 			
-			if (floor.floorLayout[x1/tileSize][y1/tileSize - 1] == 15){
-				character.translateY(-tileSize);
-				y1 -= tileSize;
-				y2 -= tileSize;
+			if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE){
+				character.translateY(-TILE_SIZE);
+				y1 -= TILE_SIZE;
+				y2 -= TILE_SIZE;
 			}
 		}
 		else if (direction == "right"){
@@ -120,10 +131,10 @@ public class Player {
 			if (rightFrame == 4) //once it gets to end of animation roll, reset
 				rightFrame = 0;
 			
-			if (floor.floorLayout[x2/tileSize][y1/tileSize] == 15){
-				character.translateX(tileSize);
-				x1 += tileSize;
-				x2 += tileSize;
+			if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == FLOOR_TILE){
+				character.translateX(TILE_SIZE);
+				x1 += TILE_SIZE;
+				x2 += TILE_SIZE;
 			}
 		}
 		else if (direction == "left"){
@@ -153,10 +164,10 @@ public class Player {
 			if (leftFrame == 4) //once it gets to end of animation roll, reset
 				leftFrame = 0;
 			
-			if (floor.floorLayout[x1/tileSize - 1][y1/tileSize] == 15){
-				character.translateX(-tileSize);
-				x1 -= tileSize;
-				x2 -= tileSize;
+			if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE){
+				character.translateX(-TILE_SIZE);
+				x1 -= TILE_SIZE;
+				x2 -= TILE_SIZE;
 			}
 		}
 	}

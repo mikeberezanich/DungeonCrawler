@@ -81,19 +81,15 @@ public class Game implements ApplicationListener {
     
     private void handleInput() {
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
-    		camera.translate(0, tileSize, 0);
     		player.movePlayer("up", batch, floor);
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
-    		camera.translate(0, -tileSize, 0);
     		player.movePlayer("down", batch, floor);
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){
-    		camera.translate(tileSize, 0, 0);
     		player.movePlayer("right", batch, floor);
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
-    		camera.translate(-tileSize, 0, 0);
     		player.movePlayer("left", batch, floor);
     	}
     }

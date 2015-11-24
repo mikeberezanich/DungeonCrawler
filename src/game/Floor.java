@@ -19,21 +19,35 @@ public class Floor{
 
 	public int[][] floorLayout = new int[32][24];
 	public Vector<Room> rooms;
-	public static int tileSize = 32;
+	public static final int TILE_SIZE = 32;
+	public static final int FLOOR_TILE = 15;
+	public static final int EMPTY_TILE = 16;
+	public static final int VERT_CORR_TILE = 20;
+	public static final int VERT_CORR_TOP_DOOR_TILE = 21;
+	public static final int VERT_CORR_BOTTOM_DOOR_TILE = 22;
+	public static final int HORIZ_CORR_TILE = 23;
+	public static final int HORIZ_CORR_RIGHT_DOOR_TILE = 24;
+	public static final int HORIZ_CORR_LEFT_DOOR_TILE = 25;
+	public static final int BOTH_CORR_TILE = 26;
+	public static final int TOP_CENTER_ROOM_TILE = 27;
+	public static final int BOTTOM_CENTER_ROOM_TILE = 28;
+	public static final int STAIR_TILE = 30;
 	private Random rng = new Random();
-	private Texture brickTexture = new Texture("assets/brick.png");
-	private Texture dirtTexture = new Texture("assets/dirt.png");
+	private int positionRng;
 	private Texture floorTileset = new Texture("assets/WallSet.png");
 	private TextureRegion[] floorTiles = new TextureRegion[20];
+	private Texture stairs = new Texture("assets/Stairs5.png");
+	private int[] tempCoords;
 	
 	public Floor(){
 	
-		//floor array is now represented by numbers 0-28 where 16 equals empty space between rooms
+		//floor array is now represented by numbers 0-30 where 16 equals empty space between rooms
 		//20-28 represent different corridor pieces that are used later for rendering
 		//0-17 refer to tile numbers, reference WallSet (with tile mapping).xcf to find tile numbers
+		//30 represents the stairs
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
-				floorLayout[i][j] = 16;
+				floorLayout[i][j] = EMPTY_TILE;
 			}
 		}
 		
@@ -47,6 +61,9 @@ public class Floor{
 		}
 		
 		this.placeRooms();
+		
+		positionRng = rng.nextInt(this.rooms.size());
+		floorLayout[this.rooms.get(positionRng).x2/TILE_SIZE - 1][this.rooms.get(positionRng).y1/TILE_SIZE + 1] = STAIR_TILE;
 		
 	}
 	
@@ -90,27 +107,27 @@ public class Floor{
 	
 	//carves out room in floor array
 	private void createRoom(Room room, Vector<Room> rooms){
-		for (int i = room.x1/tileSize; i <= room.x2/tileSize; i++){
-			for (int j = room.y1/tileSize; j <= room.y2/tileSize; j++){
-				if (i == room.x1/tileSize && j == room.y1/tileSize && floorLayout[i][j] == 16)
+		for (int i = room.x1/TILE_SIZE; i <= room.x2/TILE_SIZE; i++){
+			for (int j = room.y1/TILE_SIZE; j <= room.y2/TILE_SIZE; j++){
+				if (i == room.x1/TILE_SIZE && j == room.y1/TILE_SIZE && floorLayout[i][j] == EMPTY_TILE)
 					floorLayout[i][j] = 13; //creates bottom left corner
-				else if (i == room.x2/tileSize && j == room.y1/tileSize && floorLayout[i][j] == 16)
+				else if (i == room.x2/TILE_SIZE && j == room.y1/TILE_SIZE && floorLayout[i][j] == EMPTY_TILE)
 					floorLayout[i][j] = 14; //creates bottom right corner
-				else if (i == room.x1/tileSize && floorLayout[i][j] == 16)
+				else if (i == room.x1/TILE_SIZE && floorLayout[i][j] == EMPTY_TILE)
 					floorLayout[i][j] = 10; //creates left wall
-				else if (i == room.x2/tileSize && floorLayout[i][j] == 16)
+				else if (i == room.x2/TILE_SIZE && floorLayout[i][j] == EMPTY_TILE)
 					floorLayout[i][j] = 11; //creates right wall
-				else if (j == room.y2/tileSize && i == room.centerX/tileSize && (floorLayout[i][j] == 16 || floorLayout[i][j] == 20))
-					floorLayout[i][j] = 27; //center of top wall, used for corridors later
-				else if (j == room.y1/tileSize && i == room.centerX/tileSize && (floorLayout[i][j] == 16 || floorLayout[i][j] == 20))
-					floorLayout[i][j] = 28; //center of bottom wall, used for corridors later
-				else if ((j == room.y1/tileSize || j == room.y2/tileSize) && floorLayout[i][j] == 16)
+				else if (j == room.y2/TILE_SIZE && i == room.centerX/TILE_SIZE && (floorLayout[i][j] == EMPTY_TILE || floorLayout[i][j] == VERT_CORR_TILE))
+					floorLayout[i][j] = TOP_CENTER_ROOM_TILE; //center of top wall, used for corridors later
+				else if (j == room.y1/TILE_SIZE && i == room.centerX/TILE_SIZE && (floorLayout[i][j] == EMPTY_TILE || floorLayout[i][j] == VERT_CORR_TILE))
+					floorLayout[i][j] = BOTTOM_CENTER_ROOM_TILE; //center of bottom wall, used for corridors later
+				else if ((j == room.y1/TILE_SIZE || j == room.y2/TILE_SIZE) && floorLayout[i][j] == EMPTY_TILE)
 					floorLayout[i][j] = rng.nextInt(7); //creates bottom and top walls
-				else if (floorLayout[i][j] == 23 || floorLayout[i][j] == 20 || floorLayout[i][j] == 26){
+				else if (floorLayout[i][j] == HORIZ_CORR_TILE || floorLayout[i][j] == VERT_CORR_TILE || floorLayout[i][j] == BOTH_CORR_TILE){
 					//Do nothing
 				}
 				else
-					floorLayout[i][j] = 15;
+					floorLayout[i][j] = FLOOR_TILE;
 			}
 		}
 	}
@@ -119,155 +136,155 @@ public class Floor{
 	private void carveCorridor(int prevX, int newX, int prevY, int newY){
 		
 		if (prevX < newX && prevY < newY){
-			int k = prevY / tileSize;
-			for (int i = prevX / tileSize; i <= newX / tileSize; i++){
-				if (floorLayout[i][k] == 16)
-					floorLayout[i][k] = 23;
+			int k = prevY / TILE_SIZE;
+			for (int i = prevX / TILE_SIZE; i <= newX / TILE_SIZE; i++){
+				if (floorLayout[i][k] == EMPTY_TILE)
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 				else if (floorLayout[i][k] == 11)
-					floorLayout[i][k] = 24;
+					floorLayout[i][k] = HORIZ_CORR_RIGHT_DOOR_TILE;
 				else if (floorLayout[i][k] == 10)
-					floorLayout[i][k] = 25;
-				else if (floorLayout[i][k] == 20 || floorLayout[i][k] == 21 || floorLayout[i][k] == 22 || floorLayout[i][k] == 26 || i == newX / tileSize) 
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
+				else if (floorLayout[i][k] == VERT_CORR_TILE || floorLayout[i][k] == VERT_CORR_TOP_DOOR_TILE || floorLayout[i][k] == VERT_CORR_BOTTOM_DOOR_TILE || floorLayout[i][k] == BOTH_CORR_TILE || i == newX / TILE_SIZE) 
 					//if overlapping with any verical corridor or at end of carving, make a both corridor tile 
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 24)
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 25)
-					floorLayout[i][k] = 25;
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_RIGHT_DOOR_TILE)
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_LEFT_DOOR_TILE)
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
 				else
-					floorLayout[i][k] = 23;
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 			}
-			k = newX / tileSize;
-			for (int j = prevY / tileSize; j <= newY / tileSize; j++){
-				if (floorLayout[k][j] == 16)
-					floorLayout[k][j] = 20;
-				else if (floorLayout[k][j] == 27)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 28)
-					floorLayout[k][j] = 22;
-				else if (floorLayout[k][j] == 23 || floorLayout[k][j] == 24 || floorLayout[k][j] == 25 || floorLayout[k][j] == 26 || j == newY / tileSize) 
+			k = newX / TILE_SIZE;
+			for (int j = prevY / TILE_SIZE; j <= newY / TILE_SIZE; j++){
+				if (floorLayout[k][j] == EMPTY_TILE)
+					floorLayout[k][j] = VERT_CORR_TILE;
+				else if (floorLayout[k][j] == TOP_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == BOTTOM_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
+				else if (floorLayout[k][j] == HORIZ_CORR_TILE || floorLayout[k][j] == HORIZ_CORR_RIGHT_DOOR_TILE || floorLayout[k][j] == HORIZ_CORR_LEFT_DOOR_TILE || floorLayout[k][j] == BOTH_CORR_TILE || j == newY / TILE_SIZE) 
 					//if overlapping with any horizontal corridor or at end of carving, make a both corridor tile 
-					floorLayout[k][j] = 26;
-				else if (floorLayout[k][j] == 21)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 22)
-					floorLayout[k][j] = 22;
+					floorLayout[k][j] = BOTH_CORR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_TOP_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_BOTTOM_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
 				else
-					floorLayout[k][j] = 20;
+					floorLayout[k][j] = VERT_CORR_TILE;
 			}
 		}
 		else if (prevX < newX && prevY > newY){
-			int k = prevY / tileSize;
-			for (int i = prevX / tileSize; i <= newX / tileSize; i++){
-				if (floorLayout[i][k] == 16)
-					floorLayout[i][k] = 23;
+			int k = prevY / TILE_SIZE;
+			for (int i = prevX / TILE_SIZE; i <= newX / TILE_SIZE; i++){
+				if (floorLayout[i][k] == EMPTY_TILE)
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 				else if (floorLayout[i][k] == 11)
-					floorLayout[i][k] = 24;
+					floorLayout[i][k] = HORIZ_CORR_RIGHT_DOOR_TILE;
 				else if (floorLayout[i][k] == 10)
-					floorLayout[i][k] = 25;
-				else if (floorLayout[i][k] == 20 || floorLayout[i][k] == 21 || floorLayout[i][k] == 22 || floorLayout[i][k] == 26 || i == newX / tileSize) 
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
+				else if (floorLayout[i][k] == VERT_CORR_TILE || floorLayout[i][k] == VERT_CORR_TOP_DOOR_TILE || floorLayout[i][k] == VERT_CORR_BOTTOM_DOOR_TILE || floorLayout[i][k] == BOTH_CORR_TILE || i == newX / TILE_SIZE) 
 					//if overlapping with any verical corridor or at end of carving, make a both corridor tile 
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 24)
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 25)
-					floorLayout[i][k] = 25;
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_RIGHT_DOOR_TILE)
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_LEFT_DOOR_TILE)
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
 				else
-					floorLayout[i][k] = 23;
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 			}
-			k = newX / tileSize;
-			for (int j = newY / tileSize; j <= prevY / tileSize; j++){
-				if (floorLayout[k][j] == 16)
-					floorLayout[k][j] = 20;
-				else if (floorLayout[k][j] == 27)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 28)
-					floorLayout[k][j] = 22;
-				else if (floorLayout[k][j] == 23 || floorLayout[k][j] == 24 || floorLayout[k][j] == 25 || floorLayout[k][j] == 26 || j == newY / tileSize) 
+			k = newX / TILE_SIZE;
+			for (int j = newY / TILE_SIZE; j <= prevY / TILE_SIZE; j++){
+				if (floorLayout[k][j] == EMPTY_TILE)
+					floorLayout[k][j] = VERT_CORR_TILE;
+				else if (floorLayout[k][j] == TOP_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == BOTTOM_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
+				else if (floorLayout[k][j] == HORIZ_CORR_TILE || floorLayout[k][j] == HORIZ_CORR_RIGHT_DOOR_TILE || floorLayout[k][j] == HORIZ_CORR_LEFT_DOOR_TILE || floorLayout[k][j] == BOTH_CORR_TILE || j == newY / TILE_SIZE) 
 					//if overlapping with any horizontal corridor or at end of carving, make a both corridor tile 
-					floorLayout[k][j] = 26;
-				else if (floorLayout[k][j] == 21)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 22)
-					floorLayout[k][j] = 22;
+					floorLayout[k][j] = BOTH_CORR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_TOP_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_BOTTOM_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
 				else
-					floorLayout[k][j] = 20;
+					floorLayout[k][j] = VERT_CORR_TILE;
 			}
 		}
 		else if (prevX > newX && prevY < newY){
-			int k = prevY / tileSize;
-			for (int i = prevX / tileSize; i >= newX / tileSize; i--){
-				if (floorLayout[i][k] == 16)
-					floorLayout[i][k] = 23;
+			int k = prevY / TILE_SIZE;
+			for (int i = prevX / TILE_SIZE; i >= newX / TILE_SIZE; i--){
+				if (floorLayout[i][k] == EMPTY_TILE)
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 				else if (floorLayout[i][k] == 11)
-					floorLayout[i][k] = 24;
+					floorLayout[i][k] = HORIZ_CORR_RIGHT_DOOR_TILE;
 				else if (floorLayout[i][k] == 10)
-					floorLayout[i][k] = 25;
-				else if (floorLayout[i][k] == 20 || floorLayout[i][k] == 21 || floorLayout[i][k] == 22 || floorLayout[i][k] == 26 || i == newX / tileSize) 
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
+				else if (floorLayout[i][k] == VERT_CORR_TILE || floorLayout[i][k] == VERT_CORR_TOP_DOOR_TILE || floorLayout[i][k] == VERT_CORR_BOTTOM_DOOR_TILE || floorLayout[i][k] == BOTH_CORR_TILE || i == newX / TILE_SIZE) 
 					//if overlapping with any verical corridor or at end of carving, make a both corridor tile 
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 24)
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 25)
-					floorLayout[i][k] = 25;
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_RIGHT_DOOR_TILE)
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_LEFT_DOOR_TILE)
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
 				else
-					floorLayout[i][k] = 23;
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 			}
-			k = newX / tileSize;
-			for (int j = prevY / tileSize; j <= newY / tileSize; j++){
-				if (floorLayout[k][j] == 16)
-					floorLayout[k][j] = 20;
-				else if (floorLayout[k][j] == 27)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 28)
-					floorLayout[k][j] = 22;
-				else if (floorLayout[k][j] == 23 || floorLayout[k][j] == 24 || floorLayout[k][j] == 25 || floorLayout[k][j] == 26 || j == newY / tileSize) 
+			k = newX / TILE_SIZE;
+			for (int j = prevY / TILE_SIZE; j <= newY / TILE_SIZE; j++){
+				if (floorLayout[k][j] == EMPTY_TILE)
+					floorLayout[k][j] = VERT_CORR_TILE;
+				else if (floorLayout[k][j] == TOP_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == BOTTOM_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
+				else if (floorLayout[k][j] == 23 || floorLayout[k][j] == HORIZ_CORR_RIGHT_DOOR_TILE || floorLayout[k][j] == HORIZ_CORR_LEFT_DOOR_TILE || floorLayout[k][j] == BOTH_CORR_TILE || j == newY / TILE_SIZE) 
 					//if overlapping with any horizontal corridor or at end of carving, make a both corridor tile 
-					floorLayout[k][j] = 26;
-				else if (floorLayout[k][j] == 21)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 22)
-					floorLayout[k][j] = 22;
+					floorLayout[k][j] = BOTH_CORR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_TOP_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_BOTTOM_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
 				else
-					floorLayout[k][j] = 20;
+					floorLayout[k][j] = VERT_CORR_TILE;
 			}
 		}
 		else {
-			int k = newY / tileSize;
-			for (int i = newX / tileSize; i <= prevX / tileSize; i++){
-				if (floorLayout[i][k] == 16)
-					floorLayout[i][k] = 23;
+			int k = newY / TILE_SIZE;
+			for (int i = newX / TILE_SIZE; i <= prevX / TILE_SIZE; i++){
+				if (floorLayout[i][k] == EMPTY_TILE)
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 				else if (floorLayout[i][k] == 11)
-					floorLayout[i][k] = 24;
+					floorLayout[i][k] = HORIZ_CORR_RIGHT_DOOR_TILE;
 				else if (floorLayout[i][k] == 10)
-					floorLayout[i][k] = 25;
-				else if (floorLayout[i][k] == 20 || floorLayout[i][k] == 21 || floorLayout[i][k] == 22 || floorLayout[i][k] == 26 || i == newX / tileSize) 
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
+				else if (floorLayout[i][k] == VERT_CORR_TILE || floorLayout[i][k] == VERT_CORR_TOP_DOOR_TILE || floorLayout[i][k] == VERT_CORR_BOTTOM_DOOR_TILE || floorLayout[i][k] == BOTH_CORR_TILE || i == newX / TILE_SIZE) 
 					//if overlapping with any verical corridor or at end of carving, make a both corridor tile 
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 24)
-					floorLayout[i][k] = 26;
-				else if (floorLayout[i][k] == 25)
-					floorLayout[i][k] = 25;
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_RIGHT_DOOR_TILE)
+					floorLayout[i][k] = BOTH_CORR_TILE;
+				else if (floorLayout[i][k] == HORIZ_CORR_LEFT_DOOR_TILE)
+					floorLayout[i][k] = HORIZ_CORR_LEFT_DOOR_TILE;
 				else
-					floorLayout[i][k] = 23;
+					floorLayout[i][k] = HORIZ_CORR_TILE;
 			}
-			k = prevX / tileSize;
-			for (int j = newY / tileSize; j <= prevY / tileSize; j++){
-				if (floorLayout[k][j] == 16)
-					floorLayout[k][j] = 20;
-				else if (floorLayout[k][j] == 27)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 28)
-					floorLayout[k][j] = 22;
-				else if (floorLayout[k][j] == 23 || floorLayout[k][j] == 24 || floorLayout[k][j] == 25 || floorLayout[k][j] == 26 || j == newY / tileSize) 
+			k = prevX / TILE_SIZE;
+			for (int j = newY / TILE_SIZE; j <= prevY / TILE_SIZE; j++){
+				if (floorLayout[k][j] == EMPTY_TILE)
+					floorLayout[k][j] = VERT_CORR_TILE;
+				else if (floorLayout[k][j] == TOP_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == BOTTOM_CENTER_ROOM_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
+				else if (floorLayout[k][j] == HORIZ_CORR_TILE || floorLayout[k][j] == HORIZ_CORR_RIGHT_DOOR_TILE || floorLayout[k][j] == HORIZ_CORR_LEFT_DOOR_TILE || floorLayout[k][j] == BOTH_CORR_TILE || j == newY / TILE_SIZE) 
 					//if overlapping with any horizontal corridor or at end of carving, make a both corridor tile 
-					floorLayout[k][j] = 26;
-				else if (floorLayout[k][j] == 21)
-					floorLayout[k][j] = 21;
-				else if (floorLayout[k][j] == 22)
-					floorLayout[k][j] = 22;
+					floorLayout[k][j] = BOTH_CORR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_TOP_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_TOP_DOOR_TILE;
+				else if (floorLayout[k][j] == VERT_CORR_BOTTOM_DOOR_TILE)
+					floorLayout[k][j] = VERT_CORR_BOTTOM_DOOR_TILE;
 				else
-					floorLayout[k][j] = 20;
+					floorLayout[k][j] = VERT_CORR_TILE;
 			}
 		}
 	}
@@ -279,14 +296,14 @@ public class Floor{
 			for (int j = 0; j < 24; j++){
 				
 				//don't even bother trying to make sense of these, these are just all the different situations being accounted for
-				if (floorLayout[i][j] == 26){
-					if (floorLayout[i][j+1] == 16)
+				if (floorLayout[i][j] == BOTH_CORR_TILE){
+					if (floorLayout[i][j+1] == EMPTY_TILE)
 						floorLayout[i][j+1] = rng.nextInt(7);
-					if (floorLayout[i][j-1] == 16)
+					if (floorLayout[i][j-1] == EMPTY_TILE)
 						floorLayout[i][j-1] = rng.nextInt(7);
-					if (floorLayout[i+1][j] == 16)
+					if (floorLayout[i+1][j] == EMPTY_TILE)
 						floorLayout[i+1][j] = 11;
-					if (floorLayout[i-1][j] == 16)
+					if (floorLayout[i-1][j] == EMPTY_TILE)
 						floorLayout[i-1][j] = 10;
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
 						floorLayout[i+1][j+1] = 11; //this doesn't seem to work for some reason
@@ -334,7 +351,7 @@ public class Floor{
 						floorLayout[i-1][j] = 12;
 					if (floorLayout[i+1][j] == 10)
 						floorLayout[i+1][j] = 12;
-					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 16){
+					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == EMPTY_TILE){
 						floorLayout[i-1][j-1] = 9;
 						floorLayout[i-1][j-2] = 12;
 					}
@@ -350,15 +367,15 @@ public class Floor{
 						floorLayout[i-1][j-1] = 9;
 					
 				}
-				else if (floorLayout[i][j] == 20){
-					if (floorLayout[i-1][j] == 16)
+				else if (floorLayout[i][j] == VERT_CORR_TILE){
+					if (floorLayout[i-1][j] == EMPTY_TILE)
 						floorLayout[i-1][j] = 10;
-					if (floorLayout[i+1][j] == 16)
+					if (floorLayout[i+1][j] == EMPTY_TILE)
 						floorLayout[i+1][j] = 11;
 					if (floorLayout[i-1][j] == 11)
 						floorLayout[i-1][j] = 12;
 					if (floorLayout[i+1][j] == 10)
-						if (floorLayout[i+1][j+1] == 15 || floorLayout[i+1][j+1] == 23 || floorLayout[i+1][j+1] == 25)
+						if (floorLayout[i+1][j+1] == FLOOR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_LEFT_DOOR_TILE)
 							floorLayout[i+1][j] = rng.nextInt(7);
 						else
 							floorLayout[i+1][j] = 12;
@@ -367,7 +384,7 @@ public class Floor{
 					if (floorLayout[i+1][j] == 14)
 						floorLayout[i+1][j] = 11;
 					if (floorLayout[i-1][j] == 14)
-						floorLayout[i-1][j] = 16;
+						floorLayout[i-1][j] = EMPTY_TILE;
 					if (floorLayout[i+1][j] == 13)
 						floorLayout[i+1][j] = 17;
 					if (floorLayout[i-1][j] == 7)
@@ -384,26 +401,26 @@ public class Floor{
 						floorLayout[i+1][j] = 8;
 					if (floorLayout[i-1][j] < 7 && floorLayout[i-1][j-1] == 10)
 						floorLayout[i-1][j] = 7;
-					if (floorLayout[i+1][j] == 22 && floorLayout[i+1][j-1] == 11)
+					if (floorLayout[i+1][j] == VERT_CORR_BOTTOM_DOOR_TILE && floorLayout[i+1][j-1] == 11)
 						floorLayout[i+1][j] = 8;
-					if (floorLayout[i-1][j] == 22 && floorLayout[i-1][j-1] == 10)
+					if (floorLayout[i-1][j] == VERT_CORR_BOTTOM_DOOR_TILE && floorLayout[i-1][j-1] == 10)
 						floorLayout[i-1][j] = 7;
-					if (floorLayout[i-1][j] == 8 && floorLayout[i-1][j-1] == 16){
+					if (floorLayout[i-1][j] == 8 && floorLayout[i-1][j-1] == EMPTY_TILE){
 						floorLayout[i-1][j] = 9;
 						floorLayout[i-1][j-1] = 12;
 					}
-					if (floorLayout[i+1][j] == 8 && (floorLayout[i+2][j] == 20 || floorLayout[i+2][j] == 22)){
+					if (floorLayout[i+1][j] == 8 && (floorLayout[i+2][j] == VERT_CORR_TILE || floorLayout[i+2][j] == VERT_CORR_BOTTOM_DOOR_TILE)){
 						floorLayout[i+1][j] = 9;
 					}
 					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 12)
 						floorLayout[i-1][j-1] = 9;
 				}
-				else if (floorLayout[i][j] == 21){
+				else if (floorLayout[i][j] == VERT_CORR_TOP_DOOR_TILE){
 					if (floorLayout[i+1][j] < 7 && floorLayout[i+1][j+1] < 7)
 						floorLayout[i+1][j+1] = 8;
 				}
-				else if (floorLayout[i][j] == 22){
-					if (floorLayout[i-1][j] < 7 && floorLayout[i-2][j] == 15 )
+				else if (floorLayout[i][j] == VERT_CORR_BOTTOM_DOOR_TILE){
+					if (floorLayout[i-1][j] < 7 && floorLayout[i-2][j] == FLOOR_TILE )
 						floorLayout[i-1][j] = 9;
 					if (floorLayout[i-1][j] < 7 && floorLayout[i-1][j-1] == 10)
 						floorLayout[i-1][j] = 7;
@@ -412,10 +429,10 @@ public class Floor{
 					if (floorLayout[i+1][j] < 7 && (floorLayout[i+1][j-1] == 11 || floorLayout[i+1][j-1] < 7))
 						floorLayout[i+1][j] = 8;
 				}
-				else if (floorLayout[i][j] == 23){
-					if (floorLayout[i][j-1] == 16)
+				else if (floorLayout[i][j] == HORIZ_CORR_TILE){
+					if (floorLayout[i][j-1] == EMPTY_TILE)
 						floorLayout[i][j-1] = rng.nextInt(7);
-					if (floorLayout[i][j+1] == 16)
+					if (floorLayout[i][j+1] == EMPTY_TILE)
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j-1] == 10)
 						floorLayout[i][j-1] = 7;
@@ -440,7 +457,7 @@ public class Floor{
 					if (floorLayout[i][j-1] == 13)
 						floorLayout[i][j-1] = rng.nextInt(7);
 				}
-				else if (floorLayout[i][j] == 24){
+				else if (floorLayout[i][j] == HORIZ_CORR_RIGHT_DOOR_TILE){
 					if (floorLayout[i][j-1] == 11)
 						floorLayout[i][j-1] = 8;
 					if (floorLayout[i][j+1] == 11)
@@ -451,19 +468,19 @@ public class Floor{
 						floorLayout[i][j-1] = rng.nextInt(7);
 					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] == 11)
 						floorLayout[i][j-1] = 8;
-					if (floorLayout[i][j+1] == 16)
+					if (floorLayout[i][j+1] == EMPTY_TILE)
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
 						floorLayout[i+1][j+1] = 11;
 				}
-				else if (floorLayout[i][j] == 25){
+				else if (floorLayout[i][j] == HORIZ_CORR_LEFT_DOOR_TILE){
 					if (floorLayout[i][j-1] == 10)
 						floorLayout[i][j-1] = 7;
 					if (floorLayout[i][j+1] == 10)
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j-1] == 13)
 						floorLayout[i][j-1] = rng.nextInt(7);
-					if (floorLayout[i][j+1] == 16)
+					if (floorLayout[i][j+1] == EMPTY_TILE)
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 12)
 						floorLayout[i][j+1] = rng.nextInt(7);
@@ -472,7 +489,7 @@ public class Floor{
 			}
 		}
 		
-		//these next 15 lines are just to print the floor array for debugging purposes
+		//these next FLOOR_TILE lines are just to print the floor array for debugging purposes
 		for (int i = 0; i < 24; i++){
 			System.out.print(i + " ");
 			if (i < 10)
@@ -492,29 +509,29 @@ public class Floor{
 		//this changes all the corridor tiles in the array to floor tiles to allow the character to walk on them
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
-				if (floorLayout[i][j] >= 20 && floorLayout[i][j] < 27)
-					floorLayout[i][j] = 15;
+				if (floorLayout[i][j] >= VERT_CORR_TILE && floorLayout[i][j] < 27)
+					floorLayout[i][j] = FLOOR_TILE;
 			}
 		}
 		
 		//this should hopefully alleviate a couple glitches caused with the corridor system
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
-				if (j != 0 && i != 0 && i != 31 && floorLayout[i][j] == 28 && floorLayout[i][j-1] == 15){
-					floorLayout[i][j] = 15;
+				if (j != 0 && i != 0 && i != 31 && floorLayout[i][j] == BOTTOM_CENTER_ROOM_TILE && floorLayout[i][j-1] == FLOOR_TILE){
+					floorLayout[i][j] = FLOOR_TILE;
 					if (floorLayout[i-1][j-1] == 10 || floorLayout[i-1][j-1] < 7)
 						floorLayout[i-1][j] = 7;
 					else if (floorLayout[i+1][j-1] == 10 || floorLayout[i+1][j-1] < 7)
 						floorLayout[i+1][j] = 8;
 				}
-				if (floorLayout[i][j] == 28){
+				if (floorLayout[i][j] == BOTTOM_CENTER_ROOM_TILE){
 					if (floorLayout[i][j-1] == 10)
 						floorLayout[i][j] = 7;
 					else if (floorLayout[i][j-1] == 11)
 						floorLayout[i][j] = 8;
 				}
-				if (j != 23 && floorLayout[i][j] == 27 && floorLayout[i][j+1] == 15){
-					floorLayout[i][j] = 15;
+				if (j != 23 && floorLayout[i][j] == TOP_CENTER_ROOM_TILE && floorLayout[i][j+1] == FLOOR_TILE){
+					floorLayout[i][j] = FLOOR_TILE;
 				}
 			}
 		}
@@ -526,54 +543,57 @@ public class Floor{
 		int wallSetTile;
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
-				if (floorLayout[i][j] == 16){
+				if (floorLayout[i][j] == EMPTY_TILE){
 					//leaves black if open space
 				}
 				else if (floorLayout[i][j] < 7){
 					wallSetTile = floorLayout[i][j];
-					batch.draw(floorTiles[wallSetTile], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[wallSetTile], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
-				else if (floorLayout[i][j] == 15){
-					batch.draw(floorTiles[15], i * tileSize, j * tileSize, tileSize, tileSize);
+				else if (floorLayout[i][j] == FLOOR_TILE){
+					batch.draw(floorTiles[FLOOR_TILE], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 7){
-					batch.draw(floorTiles[7], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[7], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 8){
-					batch.draw(floorTiles[8], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[8], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 9){
-					batch.draw(floorTiles[9], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[9], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 10){
-					batch.draw(floorTiles[10], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[10], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 11){
-					batch.draw(floorTiles[11], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[11], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 12){
-					batch.draw(floorTiles[12], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[12], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 13){
-					batch.draw(floorTiles[13], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[13], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 14){
-					batch.draw(floorTiles[14], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[14], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
-				else if (floorLayout[i][j] == 15){
-					batch.draw(floorTiles[15], i * tileSize, j * tileSize, tileSize, tileSize);
+				else if (floorLayout[i][j] == FLOOR_TILE){
+					batch.draw(floorTiles[FLOOR_TILE], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
-				else if (floorLayout[i][j] == 16){
-					batch.draw(floorTiles[16], i * tileSize, j * tileSize, tileSize, tileSize);
+				else if (floorLayout[i][j] == EMPTY_TILE){
+					batch.draw(floorTiles[EMPTY_TILE], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				else if (floorLayout[i][j] == 17){
-					batch.draw(floorTiles[17], i * tileSize, j * tileSize, tileSize, tileSize);
+					batch.draw(floorTiles[17], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
-				else if (floorLayout[i][j] == 27){
-					batch.draw(floorTiles[0], i * tileSize, j * tileSize, tileSize, tileSize);
+				else if (floorLayout[i][j] == TOP_CENTER_ROOM_TILE){
+					batch.draw(floorTiles[0], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
-				else if (floorLayout[i][j] == 28){
-					batch.draw(floorTiles[0], i * tileSize, j * tileSize, tileSize, tileSize);
+				else if (floorLayout[i][j] == BOTTOM_CENTER_ROOM_TILE){
+					batch.draw(floorTiles[0], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+				}
+				else if (floorLayout[i][j] == STAIR_TILE){
+					batch.draw(stairs, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
 				
 			}
@@ -585,12 +605,12 @@ public class Floor{
 		int i = rng.nextInt(31);
 		int j = rng.nextInt(23);
 		
-		while (floorLayout[i][j] != 15){
+		while (floorLayout[i][j] != FLOOR_TILE){
 			i = rng.nextInt(31);
 			j = rng.nextInt(23);
 		}
 		
-		return new int[] {i * tileSize, j * tileSize};
+		return new int[] {i * TILE_SIZE, j * TILE_SIZE};
 	}
 	
 }
