@@ -8,7 +8,6 @@
 <li>Add high score screen</li>
 <li>Make enemies</li>
 <li>Create menus</li>
-<li>Create stairs</li>
 <li>Create items</li>
 <li>Create stats system</li>
 <li>Add music</li></ul>
