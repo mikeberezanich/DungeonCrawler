@@ -33,7 +33,8 @@ public class Floor{
 	public static final int BOTTOM_CENTER_ROOM_TILE = 28;
 	public static final int STAIR_TILE = 30;
 	private Random rng = new Random();
-	private int positionRng;
+	private int roomRng;
+	private int cornerRng;
 	private Texture floorTileset = new Texture("assets/WallSet.png");
 	private TextureRegion[] floorTiles = new TextureRegion[20];
 	private Texture stairs = new Texture("assets/Stairs5.png");
@@ -62,8 +63,16 @@ public class Floor{
 		
 		this.placeRooms();
 		
-		positionRng = rng.nextInt(this.rooms.size());
-		floorLayout[this.rooms.get(positionRng).x2/TILE_SIZE - 1][this.rooms.get(positionRng).y1/TILE_SIZE + 1] = STAIR_TILE;
+		roomRng = rng.nextInt(this.rooms.size());
+		cornerRng = rng.nextInt(4);
+		if (cornerRng == 0)
+			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y2/TILE_SIZE - 1] = STAIR_TILE;
+		else if (cornerRng == 1)
+			floorLayout[this.rooms.get(roomRng).x2/TILE_SIZE - 1][this.rooms.get(roomRng).y2/TILE_SIZE - 1] = STAIR_TILE;
+		else if (cornerRng == 2)
+			floorLayout[this.rooms.get(roomRng).x2/TILE_SIZE - 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
+		else if (cornerRng == 3)
+			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
 		
 	}
 	

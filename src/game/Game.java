@@ -20,11 +20,11 @@ import com.badlogic.gdx.Input.Keys;
 
 public class Game implements ApplicationListener {
 	
+	private static final int TILE_SIZE = 32;
 	private SpriteBatch batch;
 	private Floor floor;
 	private OrthographicCamera camera;
 	private Matrix4 projection = new Matrix4();
-	public int tileSize = 32;
 	public Player player;
 	private int positionRng;
 	private Random rng = new Random();
@@ -35,7 +35,7 @@ public class Game implements ApplicationListener {
     	batch = new SpriteBatch();
         floor = new Floor();
         positionRng = rng.nextInt(floor.rooms.size());
-        player = new Player(floor.rooms.get(positionRng).centerX,floor.rooms.get(positionRng).centerY,floor.rooms.get(positionRng).centerX+tileSize,floor.rooms.get(positionRng).centerY+tileSize);
+        player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         try {
@@ -48,6 +48,7 @@ public class Game implements ApplicationListener {
     public void render () {
 
     	handleInput();
+    	checkForStairs();
     	moveCamera();
     	camera.update();
     	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
@@ -91,6 +92,18 @@ public class Game implements ApplicationListener {
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
     		player.movePlayer("left", batch, floor);
+    	}
+    }
+    
+    private void checkForStairs() {
+    	if (player.getPositionTile(floor) == 30){
+    		floor = new Floor();
+    		player.character.setPosition(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY);
+    		player.x1 = (int) player.character.getX();
+    		player.x2 = (int) player.character.getX() + TILE_SIZE;
+    		player.y1 = (int) player.character.getY();
+    		player.y2 = (int) player.character.getY() + TILE_SIZE;
+    		player.moveToNewFloor();
     	}
     }
 }

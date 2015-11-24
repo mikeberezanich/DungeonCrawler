@@ -18,11 +18,11 @@ public class Player {
 	public int y2;
 	private Texture charTexture = new Texture("assets/Panda.png");
 	private TextureRegion[] charAnimation = new TextureRegion[9]; //0-2 are standing, 3-5 are one step, 6-8 are another
-	private Sprite character;
-	private int downFrame = 1;
-	private int upFrame = 0;
-	private int rightFrame = 0;
-	private int leftFrame = 0;
+	public Sprite character;
+	public int downFrame = 1;
+	public int upFrame = 0;
+	public int rightFrame = 0;
+	public int leftFrame = 0;
 	public static final int TILE_SIZE = 32;
 	public static final int FLOOR_TILE = 15;
 	public static final int STAIR_TILE = 30;
@@ -76,13 +76,11 @@ public class Player {
 				y2 += TILE_SIZE;
 				
 			}
-			
-			if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == STAIR_TILE){
+			else if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == STAIR_TILE){
 				
 				character.translateY(TILE_SIZE);
 				y1 += TILE_SIZE;
 				y2 += TILE_SIZE;
-//				Floor nextFloor = new Floor();
 				
 			}
 		}
@@ -111,6 +109,12 @@ public class Player {
 				y1 -= TILE_SIZE;
 				y2 -= TILE_SIZE;
 			}
+			else if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE){
+				character.translateY(-TILE_SIZE);
+				y1 -= TILE_SIZE;
+				y2 -= TILE_SIZE;
+			}
+			
 		}
 		else if (direction == "right"){
 			
@@ -132,6 +136,11 @@ public class Player {
 				rightFrame = 0;
 			
 			if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == FLOOR_TILE){
+				character.translateX(TILE_SIZE);
+				x1 += TILE_SIZE;
+				x2 += TILE_SIZE;
+			}
+			else if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == STAIR_TILE){
 				character.translateX(TILE_SIZE);
 				x1 += TILE_SIZE;
 				x2 += TILE_SIZE;
@@ -169,10 +178,21 @@ public class Player {
 				x1 -= TILE_SIZE;
 				x2 -= TILE_SIZE;
 			}
+			else if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE){
+				character.translateX(-TILE_SIZE);
+				x1 -= TILE_SIZE;
+				x2 -= TILE_SIZE;
+			}
 		}
 	}
 	
-	public void moveToNewFloor(Floor nextFloor){
+	public int getPositionTile(Floor floor){
+		return floor.floorLayout[(int) (character.getX()/TILE_SIZE)][(int) (character.getY()/TILE_SIZE)];
+	}
+	
+	public void moveToNewFloor(){
+		downFrame = 0;
+		character.setRegion(charAnimation[0]);
 	}
 	
 	public int getLvl(){
