@@ -1,0 +1,44 @@
+These are subject to change until we feel like our numbers give us a balanced game
+
+static HP(Does not apply to bosses): 100 (The player may have HP boosters, or potions)
+static MP: 100
+Mana regen: [Player level] per second
+
+Armor damage reduction: 25% + [level requirement]% light, enemies can't hear you approach them
+                        50% + [level requirement]% heavy, enemies will hear you approach them
+
+(The following is how damage would work, but we should also consider tweaking numbers based on the attack speed)
+Common enemy damage:[floor level * 1.5] (Hard cap at 25, with possible exceptions)
+Boss damage: 10 + [floor level * 0.8] (Hard cap at 40, with possible exceptions)
+
+Player damage: (should we consider critical strikes?)
+-Fist: Fast speed, low damage(20)
+-Sword: Medium speed, medium damage(30)
+-Axe: Slow speed, high damage(60)
+-Bow: Medium speed, medium damage(25)
+-Magic: Depends on spell
+
+Movement speed: The player will move faster than the monsters, to allow kiting
+
+Leveling up will not have stat increases (except for mana regen), but some equipment will have a level requirement,
+so while it isn't necessary to kill every single monster in a floor, it is recommended
+
+Throughout the game the player will encounter marked stones, each stone may grant a unique buff. Only one mark may be active at a time.
+-Mark of the guardian: The player gains additional resistance to attacks (light armor reduces an additional 15% damage, heavy armor reduces an additional 10% damage)
+-Mark of the berserker: The player gains 50% additional damage
+-Mark of the vampire: The player heals for 20% of the damage dealt (melee weapons only)
+-Mark of the hunter: The player gains additional movement and attack speed
+-Mark of the wizard: The player gains additional mana regeneration
+-Mark of the alchemist: Potion effects are increased by 50%
+-Mark of the ascendant: Upon receiving lethal damage, the player will heal 50 HP, this mark dissapears after usage
+
+Items:
+-Floor keys
+-Equipment: weapons and armor
+-HP potions(heal for 30HP)
+-Arrows
+
+Magic:
+-Fireball: deals 30 damage, 30 mana cost
+-Ice lance: deals 15 damage slowing the enemy by 30% (does not apply to bosses), 30 mana cost
+-Healing touch: heals the player for 50HP, 30 mana cost
