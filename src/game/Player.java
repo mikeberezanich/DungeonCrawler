@@ -172,6 +172,9 @@ public class Player {
 		}
 	}
 	
+	public void moveToNewFloor(Floor nextFloor){
+	}
+	
 	public int getLvl(){
 		return lvl;
 	}
