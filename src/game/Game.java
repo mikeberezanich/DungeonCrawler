@@ -1,5 +1,8 @@
 package game;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Random;
@@ -17,6 +20,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+
+import sun.audio.*;
 
 public class Game implements ApplicationListener {
 	
@@ -38,6 +43,7 @@ public class Game implements ApplicationListener {
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        music();
         try {
 			connection = new DatabaseConnection().connect();
 		} catch (SQLException e) {
@@ -105,5 +111,30 @@ public class Game implements ApplicationListener {
     		player.y2 = (int) player.character.getY() + TILE_SIZE;
     		player.moveToNewFloor();
     	}
+    }
+    
+    public static void music() 
+    {       
+        AudioPlayer MGP = AudioPlayer.player;
+        AudioStream BGM;
+
+        ContinuousAudioDataStream loop = null;
+
+        try
+        {
+            BGM = new AudioStream(new FileInputStream("src/assets/magical_theme.wav"));
+            AudioPlayer.player.start(BGM);
+            //MD = BGM.getData();
+            //loop = new ContinuousAudioDataStream(MD);
+
+        }
+        catch(FileNotFoundException e){
+            System.out.print(e.toString());
+        }
+        catch(IOException error)
+        {
+            System.out.print(error.toString());
+        }
+        MGP.start(loop);
     }
 }

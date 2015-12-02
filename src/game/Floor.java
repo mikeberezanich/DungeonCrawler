@@ -37,7 +37,7 @@ public class Floor{
 	private int cornerRng;
 	private Texture floorTileset = new Texture("assets/WallSet.png");
 	private TextureRegion[] floorTiles = new TextureRegion[20];
-	private Texture stairs = new Texture("assets/Stairs5.png");
+	private Texture stairs = new Texture("assets/Stairs.png");
 	private int[] tempCoords;
 	
 	public Floor(){
