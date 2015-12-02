@@ -124,16 +124,13 @@ public class Game implements ApplicationListener {
         {
             BGM = new AudioStream(new FileInputStream("src/assets/magical_theme.wav"));
             AudioPlayer.player.start(BGM);
-            //MD = BGM.getData();
-            //loop = new ContinuousAudioDataStream(MD);
-
         }
         catch(FileNotFoundException e){
-            System.out.print(e.toString());
+            e.printStackTrace();
         }
-        catch(IOException error)
+        catch(IOException e)
         {
-            System.out.print(error.toString());
+            e.printStackTrace();
         }
         MGP.start(loop);
     }
