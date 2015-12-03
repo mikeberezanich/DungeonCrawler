@@ -113,7 +113,7 @@ public class Game implements ApplicationListener {
     	}
     }
     
-    public static void music() 
+   private void music() 
     {       
         AudioPlayer MGP = AudioPlayer.player;
         AudioStream BGM;
@@ -133,5 +133,9 @@ public class Game implements ApplicationListener {
             e.printStackTrace();
         }
         MGP.start(loop);
+    }
+    
+    private void processTurn(){
+    	;
     }
 }

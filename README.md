@@ -9,6 +9,7 @@
 <li>Make enemies</li>
 <li>Create menus</li>
 <li>Create items</li>
+</ul>
 <br>Bugs:
 <ul>
 <li>Rarely, a room will not successfully get corridors carved to it (If we cannot fix this, perhaps we have teleportation orb item that transports the player to the stairs. We can start the player with a couple and have them sometimes spawn on the floor)</li>

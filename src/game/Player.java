@@ -201,18 +201,12 @@ public class Player {
 	public void setLvl(int l){
 		lvl = l;
 	}
-	public void changeLvl(int diff){
-		lvl += diff;
-	}
 	
 	public int getExp(){
 		return exp;
 	}
 	public void setExp(int e){
 		exp = e;
-	}
-	public void changeExp(int diff){
-		exp += diff;
 	}
 	
 	public int getHealth(){
@@ -221,9 +215,6 @@ public class Player {
 	public void setHealth(int h){
 		health = h;
 	}
-	public void changeHealth(int diff){
-		health += diff;
-	}
 	
 	public int getAtk(){
 		return atk;
@@ -231,18 +222,12 @@ public class Player {
 	public void setAtk(int a){
 		atk = a;
 	}
-	public void changeAtk(int diff){
-		atk += diff;
-	}
 	
 	public int getDef(){
 		return def;
 	}
 	public void setDef(int d){
 		def = d;
-	}
-	public void changeDef(int diff){
-		def += diff;
 	}
 	
 }
