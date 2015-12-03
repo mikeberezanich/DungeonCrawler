@@ -26,6 +26,7 @@ public class Player {
 	public static final int TILE_SIZE = 32;
 	public static final int FLOOR_TILE = 15;
 	public static final int STAIR_TILE = 30;
+	public Item[] inventory = new Item[10];
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){

@@ -32,6 +32,7 @@ public class Floor{
 	public static final int TOP_CENTER_ROOM_TILE = 27;
 	public static final int BOTTOM_CENTER_ROOM_TILE = 28;
 	public static final int STAIR_TILE = 30;
+	public static final int NO_ITEM = 0;
 	private Random rng = new Random();
 	private int roomRng;
 	private int cornerRng;
@@ -39,6 +40,8 @@ public class Floor{
 	private TextureRegion[] floorTiles = new TextureRegion[20];
 	private Texture stairs = new Texture("assets/Stairs.png");
 	private int[] tempCoords;
+	public int[][] itemLocations = new int[32][24];
+	private int itemsOnFloor;
 	
 	public Floor(){
 	
@@ -52,6 +55,14 @@ public class Floor{
 			}
 		}
 		
+		for (int i = 0; i < 32; i++){
+			for (int j = 0; j < 24; j++){
+				itemLocations[i][j] = NO_ITEM;
+			}
+		}
+		
+		itemsOnFloor = rng.nextInt(4) + 2;
+		
 		int k = 0;
 		//for instantiating our tiles array with each tile of the tileset
 		for (int i = 0; i < 5; i++){
@@ -62,6 +73,7 @@ public class Floor{
 		}
 		
 		this.placeRooms();
+		this.placeItems();
 		
 		roomRng = rng.nextInt(this.rooms.size());
 		cornerRng = rng.nextInt(4);
@@ -620,6 +632,13 @@ public class Floor{
 		}
 		
 		return new int[] {i * TILE_SIZE, j * TILE_SIZE};
+	}
+	
+	public void placeItems(){
+				
+		for (int i = 0; i < itemsOnFloor; i++){
+			
+		}
 	}
 	
 }
