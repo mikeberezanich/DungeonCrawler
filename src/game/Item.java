@@ -10,6 +10,7 @@ public class Item {
 	protected Random strengthRNG = new Random();
 	public boolean isEquipped;
 	public Sprite itemSprite;
+	public int spriteNumber;
 	
 	public Item(){
 		isEquipped = false;

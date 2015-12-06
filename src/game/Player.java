@@ -29,6 +29,8 @@ public class Player {
 	public Item[] inventory = new Item[10];
 	public int itemsInInventory;
 	public boolean[] inventorySpaces = new boolean[10];
+	public Item equippedWeapon;
+	public Item equippedArmor;
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -202,15 +204,44 @@ public class Player {
 		character.setRegion(charAnimation[0]);
 	}
 	
-	public void equipWeapon(){
-		
+	public void equipItem(Item item){
+		if (item instanceof Weapon){
+			if (equippedWeapon == null){
+				equippedWeapon = item;
+				setAtk(atk + item.strength);
+			}
+			else {
+				unequipItem(equippedWeapon);
+				equippedWeapon = item;
+				setAtk(atk + item.strength);
+			}
+		}
+		else if (item instanceof Armor){
+			if (equippedArmor == null){
+				equippedArmor = item;
+				setDef(def + item.strength);
+			}
+			else {
+				unequipItem(equippedWeapon);
+				equippedWeapon = item;
+				setDef(def + item.strength);
+			}
+		}
+	}
+	public void unequipItem(Item item){
+		if (item.isEquipped){
+			if (item instanceof Weapon){
+				setAtk(atk - item.strength);
+				equippedWeapon = null;
+			}
+			else if (item instanceof Armor){
+				setDef(def - item.strength);
+				equippedArmor = null;
+			}
+		}
 	}
 	
-	public void equipArmor(){
-		
-	}
-	
-	public void usePotion(){
+	public void usePotion(Potion potion){
 		
 	}
 	
@@ -222,8 +253,17 @@ public class Player {
 		}
 	}
 	
-	public void dropItem(){
-		
+	public void dropItem(Item item, Floor floor, int inventorySpace){
+		inventory[inventorySpace] = null;
+		inventorySpaces[inventorySpace] = false;
+		itemsInInventory--;
+		if (item.isEquipped){
+			if (item instanceof Weapon)
+				equippedWeapon = null;
+			else if (item instanceof Armor)
+				equippedArmor = null;
+		}
+		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = item.spriteNumber;
 	}
 	
 	public int getLvl(){

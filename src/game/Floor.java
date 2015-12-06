@@ -42,9 +42,8 @@ public class Floor{
 	private Texture floorTileset = new Texture("assets/WallSet.png");
 	private TextureRegion[] floorTiles = new TextureRegion[20];
 	private Texture stairs = new Texture("assets/Stairs.png");
-	private int[] tempCoords;
 	public int[][] itemLocations = new int[32][24];
-	private int itemsOnFloor;
+	public int itemsOnFloor;
 	public Vector<Enemy> enemies;
 	public int[][] characterLocations = new int[32][24];
 	
