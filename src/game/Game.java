@@ -34,6 +34,7 @@ public class Game implements ApplicationListener {
 	private int positionRng;
 	private Random rng = new Random();
 	public Connection connection;
+	public int floorLevel;
 	
     public void create () {
 
@@ -44,6 +45,8 @@ public class Game implements ApplicationListener {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
+        floorLevel = 0;
+        floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = 1;
         try {
 			connection = new DatabaseConnection().connect();
 		} catch (SQLException e) {
@@ -110,6 +113,8 @@ public class Game implements ApplicationListener {
     		player.y1 = (int) player.character.getY();
     		player.y2 = (int) player.character.getY() + TILE_SIZE;
     		player.moveToNewFloor();
+    		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = 1;
+    		floorLevel++;
     	}
     }
     
@@ -136,6 +141,10 @@ public class Game implements ApplicationListener {
     }
     
     private void processTurn(){
-    	;
+    	
+    	for (int i = 0; i < floor.enemies.size(); i++){
+    		floor.enemies.get(i).AI(player, floor);
+    	}
+    	
     }
 }

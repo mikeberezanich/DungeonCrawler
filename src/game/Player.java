@@ -27,6 +27,8 @@ public class Player {
 	public static final int FLOOR_TILE = 15;
 	public static final int STAIR_TILE = 30;
 	public Item[] inventory = new Item[10];
+	public int itemsInInventory;
+	public boolean[] inventorySpaces = new boolean[10];
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -34,6 +36,10 @@ public class Player {
 		y1 = y;
 		x2 = X;
 		y2 = Y;
+		itemsInInventory = 0;
+		for (int i = 0; i < 10; i++){
+			inventorySpaces[i] = false;
+		}
 		int k = 0;
 		for (int i = 0; i < 3; i++){
 			for (int j = 1; j < 4; j++){
@@ -194,6 +200,30 @@ public class Player {
 	public void moveToNewFloor(){
 		downFrame = 0;
 		character.setRegion(charAnimation[0]);
+	}
+	
+	public void equipWeapon(){
+		
+	}
+	
+	public void equipArmor(){
+		
+	}
+	
+	public void usePotion(){
+		
+	}
+	
+	public void pickUpItem(Item item){
+		if (itemsInInventory < 10){
+			for (int i = 0; inventorySpaces[i] != false; i++){
+				inventory[i] = item;
+			}
+		}
+	}
+	
+	public void dropItem(){
+		
 	}
 	
 	public int getLvl(){

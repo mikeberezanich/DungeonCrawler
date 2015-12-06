@@ -1,39 +1,18 @@
 package game;
 
-public class Item {
+import java.util.Random;
 
-	private String itemType;
-	private int atkIncrease;
-	private int defIncrease;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+public class Item {
 	
-	public Item(String type){
-		itemType = type;
-		
-		if (itemType == "weapon"){
-			atkIncrease = 0;
-		}
-		else if (itemType == "armor"){
-			defIncrease = 0;
-		}
-		else if (itemType == "potion"){
-			
-		}
-	}
+	public int strength;
+	protected Random strengthRNG = new Random();
+	public boolean isEquipped;
+	public Sprite itemSprite;
 	
-	public void equipWeapon(Player player){
-		
-	}
-	
-	public void equipArmor(Player player){
-		
-	}
-	
-	public void usePotion(Player player){
-		
-	}
-	
-	public String getItemType(){
-		return itemType;
+	public Item(){
+		isEquipped = false;
 	}
 	
 }
