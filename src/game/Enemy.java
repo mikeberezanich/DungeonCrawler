@@ -1,8 +1,11 @@
 package game;
 
+import java.util.Random;
+
 public class Enemy extends Player{
 
 	private boolean gotAttacked;
+	private Random movementRNG = new Random();
 	
 	public Enemy(int x, int y, int X, int Y, int floorLevel) {
 		super(x, y, X, Y);
@@ -46,6 +49,42 @@ public class Enemy extends Player{
 	
 	public void moveRandomly(Floor floor){
 		
+		boolean canMove = false;
+		int direction;
+		
+		while (!canMove){
+			direction = movementRNG.nextInt(4);
+			switch(direction){
+			case 0: if(floor.floorLayout[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == floor.FLOOR_TILE && 
+					   floor.characterLocations[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == floor.NO_CHARACTER){
+							x1 -= TILE_SIZE;
+							x2 -= TILE_SIZE;
+							canMove = true;
+					}
+					break;
+			case 1: if(floor.floorLayout[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == floor.FLOOR_TILE && 
+					   floor.characterLocations[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == floor.NO_CHARACTER){
+							x1 += TILE_SIZE;
+							x2 += TILE_SIZE;
+							canMove = true;
+					}
+					break;
+			case 2: if(floor.floorLayout[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == floor.FLOOR_TILE && 
+					   floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == floor.NO_CHARACTER){
+							y1 += TILE_SIZE;
+							y2 += TILE_SIZE;
+							canMove = true;
+					}
+					break;
+			case 3: if(floor.floorLayout[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == floor.FLOOR_TILE && 
+					   floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == floor.NO_CHARACTER){
+							y1 -= TILE_SIZE;
+							y2 -= TILE_SIZE;
+							canMove = true;
+					}
+					break;
+			}
+		}
 	}
 	
 	public void moveTowardsPlayer(Floor floor){

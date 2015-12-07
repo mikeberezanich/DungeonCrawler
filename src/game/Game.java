@@ -29,7 +29,6 @@ public class Game implements ApplicationListener {
 	private SpriteBatch batch;
 	private Floor floor;
 	private OrthographicCamera camera;
-	private Matrix4 projection = new Matrix4();
 	public Player player;
 	private int positionRng;
 	private Random rng = new Random();
@@ -47,6 +46,7 @@ public class Game implements ApplicationListener {
         music();
         floorLevel = 0;
         floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = 1;
+        moveCamera();
         try {
 			connection = new DatabaseConnection().connect();
 		} catch (SQLException e) {
@@ -57,8 +57,8 @@ public class Game implements ApplicationListener {
     public void render () {
 
     	handleInput();
-    	checkForStairs();
-    	moveCamera();
+//    	checkForStairs();
+//    	moveCamera();
     	camera.update();
     	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
     	batch.begin();
@@ -74,6 +74,7 @@ public class Game implements ApplicationListener {
     }
 
     public void resize (int width, int height) {
+    	camera.update(); //I don't think this is correct but it seems to work better than having nothing there
     }
 
     public void pause () {
@@ -92,18 +93,32 @@ public class Game implements ApplicationListener {
     private void handleInput() {
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
     		player.movePlayer("up", batch, floor);
+    		moveCamera();
+//    		processTurn();
+    		checkForStairs();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
     		player.movePlayer("down", batch, floor);
+    		moveCamera();
+//    		processTurn();
+    		checkForStairs();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){
     		player.movePlayer("right", batch, floor);
+    		moveCamera();
+//    		processTurn();
+    		checkForStairs();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
     		player.movePlayer("left", batch, floor);
+    		moveCamera();
+//    		processTurn();
+    		checkForStairs();
     	}
     }
     
+    //checks if the stairs are underneath the player
+    //should update this to ask for confirmation of whether to move a new floor or not
     private void checkForStairs() {
     	if (player.getPositionTile(floor) == 30){
     		floor = new Floor();
@@ -115,9 +130,11 @@ public class Game implements ApplicationListener {
     		player.moveToNewFloor();
     		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = 1;
     		floorLevel++;
+    		moveCamera();
     	}
     }
     
+   //this function just handles starting the music 
    private void music() 
     {       
         AudioPlayer MGP = AudioPlayer.player;
@@ -140,6 +157,7 @@ public class Game implements ApplicationListener {
         MGP.start(loop);
     }
     
+    //processes turns for each enemy
     private void processTurn(){
     	
     	for (int i = 0; i < floor.enemies.size(); i++){
