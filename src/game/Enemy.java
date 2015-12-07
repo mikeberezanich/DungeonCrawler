@@ -5,7 +5,7 @@ import java.util.Random;
 public class Enemy extends Player{
 
 	private boolean gotAttacked;
-	private Random movementRNG = new Random();
+	private Random movementRng = new Random();
 	
 	public Enemy(int x, int y, int X, int Y, int floorLevel) {
 		super(x, y, X, Y);
@@ -53,7 +53,7 @@ public class Enemy extends Player{
 		int direction;
 		
 		while (!canMove){
-			direction = movementRNG.nextInt(4);
+			direction = movementRng.nextInt(4);
 			switch(direction){
 			case 0: if(floor.floorLayout[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == floor.FLOOR_TILE && 
 					   floor.characterLocations[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == floor.NO_CHARACTER){

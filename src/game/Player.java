@@ -31,6 +31,7 @@ public class Player {
 	public boolean[] inventorySpaces = new boolean[10];
 	public Item equippedWeapon;
 	public Item equippedArmor;
+	public int equipmentWeight;
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -227,6 +228,7 @@ public class Player {
 				setDef(def + item.strength);
 			}
 		}
+		equipmentWeight += item.weight;
 	}
 	public void unequipItem(Item item){
 		if (item.isEquipped){
@@ -238,7 +240,9 @@ public class Player {
 				setDef(def - item.strength);
 				equippedArmor = null;
 			}
+			equipmentWeight -= item.weight;
 		}
+		
 	}
 	
 	public void usePotion(Potion potion){

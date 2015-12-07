@@ -39,7 +39,7 @@ public class Game implements ApplicationListener {
 
     	batch = new SpriteBatch();
         floor = new Floor();
-        positionRng = rng.nextInt(floor.rooms.size());
+        positionRng = rng.nextInt(floor.rooms.size() - 1);
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
