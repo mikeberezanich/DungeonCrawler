@@ -80,18 +80,18 @@ public class Player {
 				upFrame = 0;
 			
 			if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == FLOOR_TILE){
-				
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateY(TILE_SIZE);
 				y1 += TILE_SIZE;
 				y2 += TILE_SIZE;
-				
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 			else if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == STAIR_TILE){
-				
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateY(TILE_SIZE);
 				y1 += TILE_SIZE;
 				y2 += TILE_SIZE;
-				
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 		}
 		else if (direction == "down"){
@@ -115,14 +115,18 @@ public class Player {
 				downFrame = 0;
 			
 			if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE){
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateY(-TILE_SIZE);
 				y1 -= TILE_SIZE;
 				y2 -= TILE_SIZE;
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 			else if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE){
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateY(-TILE_SIZE);
 				y1 -= TILE_SIZE;
 				y2 -= TILE_SIZE;
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 			
 		}
@@ -146,14 +150,18 @@ public class Player {
 				rightFrame = 0;
 			
 			if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == FLOOR_TILE){
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateX(TILE_SIZE);
 				x1 += TILE_SIZE;
 				x2 += TILE_SIZE;
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 			else if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == STAIR_TILE){
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateX(TILE_SIZE);
 				x1 += TILE_SIZE;
 				x2 += TILE_SIZE;
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 		}
 		else if (direction == "left"){
@@ -184,14 +192,18 @@ public class Player {
 				leftFrame = 0;
 			
 			if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE){
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateX(-TILE_SIZE);
 				x1 -= TILE_SIZE;
 				x2 -= TILE_SIZE;
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 			else if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE){
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
 				character.translateX(-TILE_SIZE);
 				x1 -= TILE_SIZE;
 				x2 -= TILE_SIZE;
+				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 			}
 		}
 	}
@@ -267,7 +279,7 @@ public class Player {
 			else if (item instanceof Armor)
 				equippedArmor = null;
 		}
-		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = item.spriteNumber;
+		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = item;
 	}
 	
 	public int getLvl(){

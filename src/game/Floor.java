@@ -32,20 +32,16 @@ public class Floor{
 	public static final int TOP_CENTER_ROOM_TILE = 27;
 	public static final int BOTTOM_CENTER_ROOM_TILE = 28;
 	public static final int STAIR_TILE = 30;
-	public static final int NO_ITEM = 0;
-	public static final int NO_CHARACTER = 0;
-	public static final int PLAYER_CHARACTER = 1;
-	public static final int ENEMY_CHARACTER = 2;
 	private Random rng = new Random();
 	private int roomRng;
 	private int cornerRng;
 	private Texture floorTileset = new Texture("assets/WallSet.png");
 	private TextureRegion[] floorTiles = new TextureRegion[20];
 	private Texture stairs = new Texture("assets/Stairs.png");
-	public int[][] itemLocations = new int[32][24];
+	public Item[][] itemLocations = new Item[32][24];
 	public int itemsOnFloor;
 	public Vector<Enemy> enemies;
-	public int[][] characterLocations = new int[32][24];
+	public Player[][] characterLocations = new Player[32][24];
 	
 	public Floor(){
 	
@@ -59,22 +55,7 @@ public class Floor{
 			}
 		}
 		
-		//starting out with no items on floor
-		for (int i = 0; i < 32; i++){
-			for (int j = 0; j < 24; j++){
-				itemLocations[i][j] = NO_ITEM;
-			}
-		}
-		
-		for (int i = 0; i < 32; i++){
-			for (int j = 0; j < 24; j++){
-				characterLocations[i][j] = NO_CHARACTER;
-			}
-		}
-		
 		itemsOnFloor = rng.nextInt(4) + 2;
-		
-		
 		
 		int k = 0;
 		//for instantiating our tiles array with each tile of the tileset
@@ -523,7 +504,7 @@ public class Floor{
 			}
 		}
 		
-		//these next FLOOR_TILE lines are just to print the floor array for debugging purposes
+		//these next couple lines are just to print the floor array for debugging purposes
 		for (int i = 0; i < 24; i++){
 			System.out.print(i + " ");
 			if (i < 10)

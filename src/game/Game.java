@@ -45,7 +45,7 @@ public class Game implements ApplicationListener {
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
         floorLevel = 0;
-        floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = 1;
+        floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
         moveCamera();
         try {
 			connection = new DatabaseConnection().connect();
@@ -128,7 +128,7 @@ public class Game implements ApplicationListener {
     		player.y1 = (int) player.character.getY();
     		player.y2 = (int) player.character.getY() + TILE_SIZE;
     		player.moveToNewFloor();
-    		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = 1;
+    		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
     		floorLevel++;
     		moveCamera();
     	}
