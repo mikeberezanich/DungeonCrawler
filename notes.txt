@@ -6,3 +6,16 @@ Knight Texture Set - thomaswp
 Gui Elements - yd
 Bosses Spritesheet - Balmer http://opengameart.org/
 Prepare Your Swords Song - Bojidar Marinov
+Magical Theme Song - remaxim
+DO Items - David E. Gervais
+Dungeon Crawl Project Utumno Tileset - RLTiles http://rltiles.sf.net
+Items - rcorre https://github.com/rcorre
+Red, Blue, Empty Bars - lancel
+HUD Pieces - Buch http://opengameart.org/users/buch
+
+Ones Used So Far
+----------------
+Wall Texture Set - Inanzen http://opengameart.org/
+Panda Character Texture Set - @danielmahon
+Magical Theme Song - remaxim
+Items - rcorre https://github.com/rcorre

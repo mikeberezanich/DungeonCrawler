@@ -12,6 +12,7 @@ public class Player {
 	private int health;
 	private int atk;
 	private int def;
+	private int mana;
 	public int x1;
 	public int x2;
 	public int y1;
@@ -282,6 +283,37 @@ public class Player {
 		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = item;
 	}
 	
+	public void attack(Player enemy, SpriteBatch batch){
+		this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
+		this.equippedWeapon.itemSprite.draw(batch);
+		this.equippedWeapon.itemSprite.rotate(90);
+		enemy.setHealth(enemy.getHealth()-this.getAtk()); //Fix this up later
+		((Enemy) enemy).gotAttacked = true;
+	}
+	
+	public void castFireball(){
+		if (this.getMana() >= 30){
+			
+			this.setMana(this.getMana() - 30);
+		}
+	}
+	
+	public void castIceLance(){
+		if (this.getMana() >= 30){
+			
+			this.setMana(this.getMana() - 30);
+		}
+	}
+	
+	public void castHealingTouch(){
+		if (this.getMana() >= 30){
+			this.setHealth(this.getHealth() + 50);
+			if (this.getHealth() > 100)
+				this.setHealth(100);
+			this.setMana(this.getMana() - 30);
+		}
+	}
+	
 	public int getLvl(){
 		return lvl;
 	}
@@ -315,6 +347,13 @@ public class Player {
 	}
 	public void setDef(int d){
 		def = d;
+	}
+	
+	public int getMana(){
+		return mana;
+	}
+	public void setMana(int m){
+		mana = m;
 	}
 	
 }

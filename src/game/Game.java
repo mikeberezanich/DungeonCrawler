@@ -91,12 +91,12 @@ public class Game implements ApplicationListener {
     }
     
     private void handleInput() {
-    	if (Gdx.input.isKeyJustPressed(Keys.UP)){
-    		player.movePlayer("up", batch, floor);
-    		moveCamera();
-//    		processTurn();
-    		checkForStairs();
-    	}
+//    	if (Gdx.input.isKeyJustPressed(Keys.UP)){
+//    		player.movePlayer("up", batch, floor);
+//    		moveCamera();
+////    		processTurn();
+//    		checkForStairs();
+//    	}
     	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
     		player.movePlayer("down", batch, floor);
     		moveCamera();
@@ -114,6 +114,9 @@ public class Game implements ApplicationListener {
     		moveCamera();
 //    		processTurn();
     		checkForStairs();
+    	}
+    	while (Gdx.input.isKeyPressed(Keys.W)){
+    		player.movePlayer("up", batch, floor);
     	}
     }
     
@@ -161,7 +164,7 @@ public class Game implements ApplicationListener {
     private void processTurn(){
     	
     	for (int i = 0; i < floor.enemies.size(); i++){
-    		floor.enemies.get(i).AI(player, floor);
+    		floor.enemies.get(i).AI(player, floor, batch);
     	}
     	
     }
