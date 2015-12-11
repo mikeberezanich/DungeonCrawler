@@ -8,8 +8,11 @@
 <li>Add death screen</li>
 <li>Add high score screen</li>
 <li>Create menus</li>
+<li>Create interaction between player and objects</li>
 <li>Spawn enemies</li>
 <li>Spawn items</li>
+<li>Create armor</li>
+<li>Set sprites for enemies</li>
 </ul>
 <br>Bugs:
 <ul>
