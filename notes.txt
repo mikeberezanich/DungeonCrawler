@@ -12,6 +12,10 @@ Dungeon Crawl Project Utumno Tileset - RLTiles http://rltiles.sf.net
 Items - rcorre https://github.com/rcorre
 Red, Blue, Empty Bars - lancel
 HUD Pieces - Buch http://opengameart.org/users/buch
+Zombie n Skeleton 2 - Reemax / Artisticdude
+Snowman Set - Nexust
+Demon Assassin - Xenocity
+Enemy Sprites - Division PLUS
 
 Ones Used So Far
 ----------------
