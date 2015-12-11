@@ -63,6 +63,7 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);
         floor.drawItems(batch);
+        floor.drawEnemies(batch);
         player.drawPlayer(batch);
         batch.end();
     	
@@ -93,25 +94,25 @@ public class Game implements ApplicationListener {
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
     		player.movePlayer("up", batch, floor);
     		moveCamera();
-//    		processTurn();
+    		processTurn();
     		checkForStairs();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
     		player.movePlayer("down", batch, floor);
     		moveCamera();
-//    		processTurn();
+    		processTurn();
     		checkForStairs();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){
     		player.movePlayer("right", batch, floor);
     		moveCamera();
-//    		processTurn();
+    		processTurn();
     		checkForStairs();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
     		player.movePlayer("left", batch, floor);
     		moveCamera();
-//    		processTurn();
+    		processTurn();
     		checkForStairs();
     	}
 
@@ -159,8 +160,8 @@ public class Game implements ApplicationListener {
     //processes turns for each enemy
     private void processTurn(){
     	
-    	for (int i = 0; i < floor.enemies.size(); i++){
-    		floor.enemies.get(i).AI(player, floor, batch);
+    	for (int i = 0; i < floor.numEnemiesOnFloor; i++){
+    		floor.enemiesOnFloor[i].AI(player, floor, batch);
     	}
     	
     }

@@ -44,15 +44,20 @@ public class Player {
 		for (int i = 0; i < 10; i++){
 			inventorySpaces[i] = false;
 		}
-		int k = 0;
-		for (int i = 0; i < 3; i++){
-			for (int j = 1; j < 4; j++){
-				charAnimation[k] = new TextureRegion(charTexture, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-				k++;
-			}
+		if (this instanceof Enemy){
+			
 		}
-		character = new Sprite (charAnimation[0]);
-		character.setPosition(x1,y1); 
+		else{
+			int k = 0;
+			for (int i = 0; i < 3; i++){
+				for (int j = 1; j < 4; j++){
+					charAnimation[k] = new TextureRegion(charTexture, i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+					k++;
+				}
+			}
+			character = new Sprite (charAnimation[0]);
+			character.setPosition(x1,y1); 
+		}
 	}
 	
 	public void drawPlayer(SpriteBatch batch){
@@ -284,11 +289,14 @@ public class Player {
 	}
 	
 	public void attack(Player enemy, SpriteBatch batch){
-		this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
-		this.equippedWeapon.itemSprite.draw(batch);
-		this.equippedWeapon.itemSprite.rotate(90);
+		if (equippedWeapon != null){
+			this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
+			this.equippedWeapon.itemSprite.draw(batch);
+			this.equippedWeapon.itemSprite.rotate(90);
+		}
 		enemy.setHealth(enemy.getHealth()-this.getAtk()); //Fix this up later
-		((Enemy) enemy).gotAttacked = true;
+		if (enemy instanceof Enemy)
+			((Enemy) enemy).gotAttacked = true;
 	}
 	
 	public void castFireball(){

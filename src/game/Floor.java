@@ -41,7 +41,8 @@ public class Floor{
 	public Item[][] itemLocations = new Item[32][24];
 	public Item[] itemsOnFloor;
 	public int numItemsOnFloor;
-	public Vector<Enemy> enemies;
+	public Enemy[] enemiesOnFloor;
+	public int numEnemiesOnFloor;
 	public Player[][] characterLocations = new Player[32][24];
 	public int floorLevel;
 	
@@ -58,8 +59,10 @@ public class Floor{
 			}
 		}
 		
-		numItemsOnFloor = rng.nextInt(4) + 2;
+		numItemsOnFloor = rng.nextInt(3) + 2;
 		itemsOnFloor = new Item[numItemsOnFloor];
+		numEnemiesOnFloor = rng.nextInt(3) + 2;
+		enemiesOnFloor = new Enemy[numEnemiesOnFloor];
 		
 		int k = 0;
 		//for instantiating our tiles array with each tile of the tileset
@@ -72,6 +75,7 @@ public class Floor{
 		
 		placeRooms();
 		placeItems();
+		placeEnemies();
 		
 		roomRng = rng.nextInt(this.rooms.size());
 		cornerRng = rng.nextInt(4);
@@ -645,4 +649,17 @@ public class Floor{
 		}
 	}
 	
+	public void placeEnemies(){
+		for (int i = 0; i < numEnemiesOnFloor; i++){
+			int[] coordinates = findOpenSpace();
+			Enemy enemy = new Enemy(coordinates[0], coordinates[1], coordinates[0] + TILE_SIZE, coordinates[1] + 64, this);
+			enemiesOnFloor[i] = enemy;
+		}
+	}
+	
+	public void drawEnemies(SpriteBatch batch){
+		for (int i = 0; i < numEnemiesOnFloor; i++){
+			enemiesOnFloor[i].character.draw(batch);
+		}
+	}
 }
