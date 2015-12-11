@@ -39,12 +39,15 @@ public class Floor{
 	private TextureRegion[] floorTiles = new TextureRegion[20];
 	private Texture stairs = new Texture("assets/Stairs.png");
 	public Item[][] itemLocations = new Item[32][24];
-	public int itemsOnFloor;
+	public Item[] itemsOnFloor;
+	public int numItemsOnFloor;
 	public Vector<Enemy> enemies;
 	public Player[][] characterLocations = new Player[32][24];
+	public int floorLevel;
 	
-	public Floor(){
+	public Floor(int level){
 	
+		floorLevel = level;
 		//floor array is now represented by numbers 0-30 where 16 equals empty space between rooms
 		//20-28 represent different corridor pieces that are used later for rendering
 		//0-17 refer to tile numbers, reference WallSet (with tile mapping).xcf to find tile numbers
@@ -55,7 +58,8 @@ public class Floor{
 			}
 		}
 		
-		itemsOnFloor = rng.nextInt(4) + 2;
+		numItemsOnFloor = rng.nextInt(4) + 2;
+		itemsOnFloor = new Item[numItemsOnFloor];
 		
 		int k = 0;
 		//for instantiating our tiles array with each tile of the tileset
@@ -66,8 +70,8 @@ public class Floor{
 			}
 		}
 		
-		this.placeRooms();
-		this.placeItems();
+		placeRooms();
+		placeItems();
 		
 		roomRng = rng.nextInt(this.rooms.size());
 		cornerRng = rng.nextInt(4);
@@ -628,10 +632,16 @@ public class Floor{
 		return new int[] {i * TILE_SIZE, j * TILE_SIZE};
 	}
 	
-	public void placeItems(){
-				
-		for (int i = 0; i < itemsOnFloor; i++){
-			
+	public void placeItems(){		
+		for (int i = 0; i < numItemsOnFloor; i++){
+			Weapon weapon = new Weapon(floorLevel, findOpenSpace());
+			itemsOnFloor[i] = weapon;
+		}
+	}
+	
+	public void drawItems(SpriteBatch batch){
+		for (int i = 0; i < numItemsOnFloor; i++){
+			itemsOnFloor[i].itemSprite.draw(batch);
 		}
 	}
 	

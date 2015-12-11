@@ -37,14 +37,14 @@ public class Game implements ApplicationListener {
 	
     public void create () {
 
+    	floorLevel = 0;
     	batch = new SpriteBatch();
-        floor = new Floor();
+        floor = new Floor(floorLevel);
         positionRng = rng.nextInt(floor.rooms.size() - 1);
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
-        floorLevel = 0;
         floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
         moveCamera();
         try {
@@ -57,13 +57,12 @@ public class Game implements ApplicationListener {
     public void render () {
 
     	handleInput();
-//    	checkForStairs();
-//    	moveCamera();
     	camera.update();
     	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
     	batch.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);
+        floor.drawItems(batch);
         player.drawPlayer(batch);
         batch.end();
     	
@@ -91,12 +90,12 @@ public class Game implements ApplicationListener {
     }
     
     private void handleInput() {
-//    	if (Gdx.input.isKeyJustPressed(Keys.UP)){
-//    		player.movePlayer("up", batch, floor);
-//    		moveCamera();
-////    		processTurn();
-//    		checkForStairs();
-//    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.UP)){
+    		player.movePlayer("up", batch, floor);
+    		moveCamera();
+//    		processTurn();
+    		checkForStairs();
+    	}
     	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
     		player.movePlayer("down", batch, floor);
     		moveCamera();
@@ -115,16 +114,14 @@ public class Game implements ApplicationListener {
 //    		processTurn();
     		checkForStairs();
     	}
-    	while (Gdx.input.isKeyPressed(Keys.W)){
-    		player.movePlayer("up", batch, floor);
-    	}
+
     }
     
     //checks if the stairs are underneath the player
     //should update this to ask for confirmation of whether to move a new floor or not
     private void checkForStairs() {
     	if (player.getPositionTile(floor) == 30){
-    		floor = new Floor();
+    		floor = new Floor(++floorLevel);
     		player.character.setPosition(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY);
     		player.x1 = (int) player.character.getX();
     		player.x2 = (int) player.character.getX() + TILE_SIZE;
@@ -132,7 +129,6 @@ public class Game implements ApplicationListener {
     		player.y2 = (int) player.character.getY() + TILE_SIZE;
     		player.moveToNewFloor();
     		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
-    		floorLevel++;
     		moveCamera();
     	}
     }

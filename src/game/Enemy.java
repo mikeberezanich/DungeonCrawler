@@ -133,11 +133,15 @@ public class Enemy extends Player{
 			if (floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE] == player ||
 				floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE] == player ||
 				floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + i] == player ||
-				floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - i] == player)
+				floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - i] == player || 
+				floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE + i] == player ||
+				floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE - i] == player ||
+				floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE - i] == player ||
+				floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE + i] == player)
 				return true;
 		}
 		
-		//If the above loop doesn't find the player then return false
+		//If the above loop doesn't find the player within so many tiles then return false
 		return false;
 	}
 	

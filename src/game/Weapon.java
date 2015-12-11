@@ -12,8 +12,8 @@ public class Weapon extends Item {
 	public TextureRegion spearSprites = new TextureRegion(itemSpritesheet, 0, TILE_SIZE, 6 * TILE_SIZE, 2 * TILE_SIZE);
 	public TextureRegion axeSprites =  new TextureRegion(itemSpritesheet, 0, 2 * TILE_SIZE, 6 * TILE_SIZE, 3 * TILE_SIZE);
 	
-	public Weapon(int floorLevel) {
-		super();
+	public Weapon(int floorLevel, int[] coordinates) {
+		super(coordinates);
 		
 		classification = itemRng.nextInt(3);
 		
@@ -33,6 +33,8 @@ public class Weapon extends Item {
 			itemSprite = new Sprite(new TextureRegion(axeSprites, itemRng.nextInt(6) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		}
 		
+		itemSprite.setX(coordinates[0]);
+		itemSprite.setY(coordinates[1]);
 	}
 
 

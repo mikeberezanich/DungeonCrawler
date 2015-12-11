@@ -17,7 +17,7 @@ public class Item {
 	protected Texture itemSpritesheet = new Texture("assets/items.png");
 	public static int TILE_SIZE = 32;
 	
-	public Item(){
+	public Item(int[] coordinates){
 		isEquipped = false;
 	}
 	

@@ -2,8 +2,8 @@ package game;
 
 public class Potion extends Item {
 
-	public Potion(){
-		super();
+	public Potion(int[] coordinates){
+		super(coordinates);
 	}
 	
 }
