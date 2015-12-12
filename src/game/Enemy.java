@@ -11,9 +11,9 @@ public class Enemy extends Player{
 
 	public boolean gotAttacked;
 	private Random movementRng = new Random();
-	private Texture enemySpritesheet = new Texture("assets/zombieandskeleton.png");
-	private TextureRegion zombieSprites = new TextureRegion(enemySpritesheet, 0, 0, 3 * TILE_SIZE, 256);
-	private TextureRegion skeletonSprites = new TextureRegion(enemySpritesheet, 3 * TILE_SIZE, 0, 6 * TILE_SIZE, 256);
+	private Texture enemySpritesheet = new Texture("assets/zombies2.png");
+	private TextureRegion zombieSprites = new TextureRegion(enemySpritesheet, 0, 0, 3 * TILE_SIZE, 192);
+//	private TextureRegion skeletonSprites = new TextureRegion(enemySpritesheet, 3 * TILE_SIZE, 0, 6 * TILE_SIZE, 256);
 	private TextureRegion[] enemyAnimation = new TextureRegion[12];
 	
 	public Enemy(int x, int y, int X, int Y, Floor floor) {
@@ -25,11 +25,13 @@ public class Enemy extends Player{
 		int k = 0;
 		for (int i = 0; i < 4; i++){
 			for (int j = 0; j < 3; j++){
-				enemyAnimation[k] = new TextureRegion(zombieSprites, j * TILE_SIZE, i * 64, TILE_SIZE, 64);
+				enemyAnimation[k] = new TextureRegion(zombieSprites, j * TILE_SIZE, i * 48, TILE_SIZE, 48);
 				k++;
 			}
 		}
 		character = new Sprite (enemyAnimation[1]);
+//		character.setScale(1f, .75f);
+		character.setSize(32, 32);
 		character.setPosition(x1,y1); 
 	}
 	
@@ -63,10 +65,11 @@ public class Enemy extends Player{
 		
 		boolean isAdjacent;
 		
-		if(floor.characterLocations[this.x1 / TILE_SIZE - 1][this.y1 / TILE_SIZE] == player ||
-		   floor.characterLocations[this.x2 / TILE_SIZE + 1][this.y1 / TILE_SIZE] == player ||
-		   floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - 1] == player ||
-		   floor.characterLocations[this.x1 / TILE_SIZE][this.y2 / TILE_SIZE + 1] == player){
+		//the && conditions are to avoid going out of bounds of the array
+		if((this.x1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - 1][this.y1 / TILE_SIZE] == player) ||
+		   (this.x1 / TILE_SIZE + 1 < 32 && floor.characterLocations[this.x2 / TILE_SIZE + 1][this.y1 / TILE_SIZE] == player) ||
+		   (this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - 1] == player) ||
+		   (this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + 1] == player)){
 			isAdjacent = true;
 		}
 		else{
@@ -84,56 +87,35 @@ public class Enemy extends Player{
 		while (!canMove){
 			direction = movementRng.nextInt(4);
 			switch(direction){
-//			case 0: if(floor.floorLayout[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == Floor.FLOOR_TILE && 
-//					   floor.characterLocations[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == null){
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-//							x1 -= TILE_SIZE;
-//							x2 -= TILE_SIZE;
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-//							canMove = true;
-//					}
 			case 0: //reset the animations for other directions
 				downFrame = 0;
 				upFrame = 0;
 				rightFrame = 0;
 				
 				if (leftFrame == 0)
-					character.setRegion(enemyAnimation[7]);
+					character.setRegion(enemyAnimation[4]);
 				else if (leftFrame == 1)
-					character.setRegion(enemyAnimation[8]);
+					character.setRegion(enemyAnimation[3]);
 				else if (leftFrame == 2)
-					character.setRegion(enemyAnimation[7]);
+					character.setRegion(enemyAnimation[4]);
 				else if (leftFrame == 3)
-					character.setRegion(enemyAnimation[6]);
+					character.setRegion(enemyAnimation[5]);
 				leftFrame++;
 				if (leftFrame == 4) //once it gets to end of animation roll, reset
 					leftFrame = 0;
 				
-				if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE){
+				if ((floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE ||
+					floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE) && 
+					floor.characterLocations[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == null){
 					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateX(TILE_SIZE);
-					x1 -= TILE_SIZE;
-					x2 -= TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
-				else if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateX(TILE_SIZE);
+					character.translateX(-TILE_SIZE);
 					x1 -= TILE_SIZE;
 					x2 -= TILE_SIZE;
 					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 					canMove = true;
 				}
 					break;
-//			case 1: if(floor.floorLayout[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == Floor.FLOOR_TILE && 
-//					   floor.characterLocations[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == null){
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-//							x1 += TILE_SIZE;
-//							x2 += TILE_SIZE;
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-//							canMove = true;
-//					}
+//			
 			case 1: //reset the animations for other directions
 				downFrame = 0;
 				upFrame = 0;
@@ -151,31 +133,18 @@ public class Enemy extends Player{
 				if (rightFrame == 4) //once it gets to end of animation roll, reset
 					rightFrame = 0;
 				
-				if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == FLOOR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateX(TILE_SIZE);
-					x1 += TILE_SIZE;
-					x2 += TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
-				else if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == STAIR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateX(TILE_SIZE);
-					x1 += TILE_SIZE;
-					x2 += TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
+				if ((floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == FLOOR_TILE ||
+						floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == STAIR_TILE) && 
+						floor.characterLocations[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == null){
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+						character.translateX(TILE_SIZE);
+						x1 += TILE_SIZE;
+						x2 += TILE_SIZE;
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+						canMove = true;
+					}
 					break;
-//			case 2: if(floor.floorLayout[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == Floor.FLOOR_TILE && 
-//					   floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == null){
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-//							y1 += TILE_SIZE;
-//							y2 += TILE_SIZE;
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-//							canMove = true;
-//					}
+//		
 			case 2:
 				
 				//reset the animations for other directions
@@ -196,31 +165,18 @@ public class Enemy extends Player{
 				if (upFrame == 4) //once it gets to end of animation roll, reset
 					upFrame = 0;
 				
-				if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == FLOOR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateY(TILE_SIZE);
-					y1 += TILE_SIZE;
-					y2 += TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
-				else if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == STAIR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateY(TILE_SIZE);
-					y1 += TILE_SIZE;
-					y2 += TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
+				if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == FLOOR_TILE ||
+						floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == STAIR_TILE) && 
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == null){
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+						character.translateY(TILE_SIZE);
+						y1 += TILE_SIZE;
+						y2 += TILE_SIZE;
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+						canMove = true;
+					}
 					break;
-//			case 3: if(floor.floorLayout[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == Floor.FLOOR_TILE && 
-//					   floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == null){
-//				            floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-//							y1 -= TILE_SIZE;
-//							y2 -= TILE_SIZE;
-//							floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-//							canMove = true;
-//					}
+//			
 			case 3: //reset the animations for other directions
 				upFrame = 0;
 				rightFrame = 0;
@@ -239,22 +195,16 @@ public class Enemy extends Player{
 				if (downFrame == 4) //once it gets to end of animation roll, reset
 					downFrame = 0;
 				
-				if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateY(-TILE_SIZE);
-					y1 -= TILE_SIZE;
-					y2 -= TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
-				else if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE){
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-					character.translateY(-TILE_SIZE);
-					y1 -= TILE_SIZE;
-					y2 -= TILE_SIZE;
-					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-					canMove = true;
-				}
+				if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE ||
+						floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE) && 
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == null){
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+						character.translateY(-TILE_SIZE);
+						y1 -= TILE_SIZE;
+						y2 -= TILE_SIZE;
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+						canMove = true;
+					}
 					break;
 			}
 		}
@@ -281,16 +231,16 @@ public class Enemy extends Player{
 					 break;
 		}
 		
-		//the && conditions are to avoid null pointer exceptions
-		for (int i = 1; i < distance; i++){
-			if (this.x1 / TILE_SIZE + i < 32 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE] == player ||
-				this.x1 / TILE_SIZE - i > 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE] == player ||
-				this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + i] == player ||
-				this.y1 / TILE_SIZE - i > 0 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - i] == player || 
-				this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE + i] == player ||
-				this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + i > 0 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE - i] == player ||
-				this.x1 / TILE_SIZE + i > 0 && this.y1 / TILE_SIZE + i > 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE - i] == player ||
-				this.x1 / TILE_SIZE + i > 0 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE + i] == player)
+		//the && conditions are to avoid going out of bounds of the array
+		for (int i = 0; i < distance; i++){
+			if ((this.x1 / TILE_SIZE + i < 32 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE] == player) ||
+				(this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + i] == player) ||
+				(this.y1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - i] == player) || 
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE + i] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + i > 0 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE - i] == player) ||
+				(this.x1 / TILE_SIZE + i >= 0 && this.y1 / TILE_SIZE + i > 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE - i] == player) ||
+				(this.x1 / TILE_SIZE + i >= 0 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE + i] == player))
 				return true;
 		}
 		

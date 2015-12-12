@@ -85,20 +85,15 @@ public class Player {
 			if (upFrame == 4) //once it gets to end of animation roll, reset
 				upFrame = 0;
 			
-			if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == FLOOR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateY(TILE_SIZE);
-				y1 += TILE_SIZE;
-				y2 += TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
-			else if (floor.floorLayout[x1/TILE_SIZE][y2/TILE_SIZE] == STAIR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateY(TILE_SIZE);
-				y1 += TILE_SIZE;
-				y2 += TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
+			if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == FLOOR_TILE ||
+					floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == STAIR_TILE) && 
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == null){
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+					character.translateY(TILE_SIZE);
+					y1 += TILE_SIZE;
+					y2 += TILE_SIZE;
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+				}
 		}
 		else if (direction == "down"){
 			
@@ -120,20 +115,15 @@ public class Player {
 			if (downFrame == 4) //once it gets to end of animation roll, reset
 				downFrame = 0;
 			
-			if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateY(-TILE_SIZE);
-				y1 -= TILE_SIZE;
-				y2 -= TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
-			else if (floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateY(-TILE_SIZE);
-				y1 -= TILE_SIZE;
-				y2 -= TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
+			if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE ||
+					floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE) && 
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == null){
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+					character.translateY(-TILE_SIZE);
+					y1 -= TILE_SIZE;
+					y2 -= TILE_SIZE;
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+				}
 			
 		}
 		else if (direction == "right"){
@@ -155,20 +145,15 @@ public class Player {
 			if (rightFrame == 4) //once it gets to end of animation roll, reset
 				rightFrame = 0;
 			
-			if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == FLOOR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateX(TILE_SIZE);
-				x1 += TILE_SIZE;
-				x2 += TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
-			else if (floor.floorLayout[x2/TILE_SIZE][y1/TILE_SIZE] == STAIR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateX(TILE_SIZE);
-				x1 += TILE_SIZE;
-				x2 += TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
+			if ((floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == FLOOR_TILE ||
+					floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == STAIR_TILE) && 
+					floor.characterLocations[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == null){
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+					character.translateX(TILE_SIZE);
+					x1 += TILE_SIZE;
+					x2 += TILE_SIZE;
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+				}
 		}
 		else if (direction == "left"){
 			
@@ -197,20 +182,15 @@ public class Player {
 			if (leftFrame == 4) //once it gets to end of animation roll, reset
 				leftFrame = 0;
 			
-			if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateX(-TILE_SIZE);
-				x1 -= TILE_SIZE;
-				x2 -= TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
-			else if (floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE){
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
-				character.translateX(-TILE_SIZE);
-				x1 -= TILE_SIZE;
-				x2 -= TILE_SIZE;
-				floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
-			}
+			if ((floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE ||
+					floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE) && 
+					floor.characterLocations[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == null){
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+					character.translateX(-TILE_SIZE);
+					x1 -= TILE_SIZE;
+					x2 -= TILE_SIZE;
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+				}
 		}
 	}
 	

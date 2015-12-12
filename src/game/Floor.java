@@ -74,19 +74,9 @@ public class Floor{
 		}
 		
 		placeRooms();
+		placeStairs();
 		placeItems();
 		placeEnemies();
-		
-		roomRng = rng.nextInt(this.rooms.size());
-		cornerRng = rng.nextInt(4);
-		if (cornerRng == 0)
-			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y2/TILE_SIZE - 1] = STAIR_TILE;
-		else if (cornerRng == 1)
-			floorLayout[this.rooms.get(roomRng).x2/TILE_SIZE - 1][this.rooms.get(roomRng).y2/TILE_SIZE - 1] = STAIR_TILE;
-		else if (cornerRng == 2)
-			floorLayout[this.rooms.get(roomRng).x2/TILE_SIZE - 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
-		else if (cornerRng == 3)
-			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
 		
 	}
 	
@@ -661,5 +651,18 @@ public class Floor{
 		for (int i = 0; i < numEnemiesOnFloor; i++){
 			enemiesOnFloor[i].character.draw(batch);
 		}
+	}
+	
+	public void placeStairs(){
+		roomRng = rng.nextInt(this.rooms.size());
+		cornerRng = rng.nextInt(4);
+		if (cornerRng == 0)
+			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y2/TILE_SIZE - 1] = STAIR_TILE;
+		else if (cornerRng == 1)
+			floorLayout[this.rooms.get(roomRng).x2/TILE_SIZE - 1][this.rooms.get(roomRng).y2/TILE_SIZE - 1] = STAIR_TILE;
+		else if (cornerRng == 2)
+			floorLayout[this.rooms.get(roomRng).x2/TILE_SIZE - 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
+		else if (cornerRng == 3)
+			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
 	}
 }
