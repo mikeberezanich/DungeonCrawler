@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class HighScore extends JPanel implements ActionListener {
@@ -31,19 +32,21 @@ public class HighScore extends JPanel implements ActionListener {
 	
 	public HighScore() throws Exception{
 		Font fontx = new Font("Serif", Font.BOLD | Font.ITALIC, 24);
-		ImageIcon newGame = new ImageIcon("src\\Buttons\\NG1.png");
-		ImageIcon newGameRollover = new ImageIcon("src\\Buttons\\NG2.png");
-		ImageIcon quitGame = new ImageIcon("src\\Buttons\\Quit1.png");
-		ImageIcon quitGameRollover = new ImageIcon("src\\Buttons\\Quit2.png");
+		ImageIcon newGame = new ImageIcon("src\\Assets\\Buttons\\NG1.png");
+		ImageIcon newGameRollover = new ImageIcon("src\\Assets\\Buttons\\NG2.png");
+		ImageIcon quitGame = new ImageIcon("src\\Assets\\Buttons\\Quit1.png");
+		ImageIcon quitGameRollover = new ImageIcon("src\\Assets\\Buttons\\Quit2.png");
 		highScores = new JFrame(name);
 		textScores = new JTextArea ("");
+		JScrollPane scrollPane = new JScrollPane(textScores);
 		container = highScores.getContentPane();
 		
-		textScores.setBounds(70, 161, 500, 219);
+		scrollPane.setBounds(70, 161, 500, 219);
+		scrollPane.setOpaque(false);
 		textScores.setOpaque(false);
 		textScores.setEditable(false);
 		textScores.setFont(fontx);
-		textScores.setForeground(Color.white);
+		scrollPane.setForeground(Color.white);
 		
 		playButton = new JButton(newGame);
 		playButton.setRolloverEnabled(true);
@@ -67,11 +70,11 @@ public class HighScore extends JPanel implements ActionListener {
 		this.setLayout(null);
 		this.add(playButton);
 		this.add(quitButton);
-		this.add(textScores);
+		this.add(scrollPane);
 		container.add(this);
 		this.setPreferredSize(new Dimension (640,480));
 		setLayout(new BorderLayout());
-		JLabel background=new JLabel(new ImageIcon("src\\highscores.png"));
+		JLabel background=new JLabel(new ImageIcon("src\\Assets\\highscores.png"));
 		add(background);
 		background.setLayout(new FlowLayout());
 		highScores.pack();

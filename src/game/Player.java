@@ -374,6 +374,14 @@ public class Player {
 		
 		//code to bring up death screen, maybe a death animation
 		
+		//need to pass the score to this eventually
+		try {
+			new GameOver();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public int getLvl(){
