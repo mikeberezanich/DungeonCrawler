@@ -33,6 +33,13 @@ public class Player {
 	public Item equippedWeapon;
 	public Item equippedArmor;
 	public int equipmentWeight;
+	private Texture fireballTexture = new Texture("assets/fireball.png");
+	private TextureRegion[] fireballAnimation = new TextureRegion[4];
+	private Sprite fireballSprite;
+	private Texture iceLanceTexture = new Texture("assets/icelance.png");
+	private TextureRegion[] iceLanceAnimation = new TextureRegion[4];
+	private Sprite iceLanceSprite;
+	public String directionFaced;
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -40,10 +47,13 @@ public class Player {
 		y1 = y;
 		x2 = X;
 		y2 = Y;
-		itemsInInventory = 0;
-		for (int i = 0; i < 10; i++){
-			inventorySpaces[i] = false;
-		}
+		
+		setHealth(100);
+		setAtk(5);
+		setDef(5);
+		directionFaced = "down";
+		
+		//This is an ugly way of differentiating between the player and enemies, which extend the player
 		if (this instanceof Enemy){
 			
 		}
@@ -57,7 +67,15 @@ public class Player {
 			}
 			character = new Sprite (charAnimation[0]);
 			character.setPosition(x1,y1); 
+			setUpSpells();
+			setMana(100);
+			equipmentWeight = 0;
+			itemsInInventory = 0;
+			for (int i = 0; i < 10; i++){
+				inventorySpaces[i] = false;
+			}
 		}
+		
 	}
 	
 	public void drawPlayer(SpriteBatch batch){
@@ -84,6 +102,8 @@ public class Player {
 			upFrame++;
 			if (upFrame == 4) //once it gets to end of animation roll, reset
 				upFrame = 0;
+			
+			directionFaced = "up";
 			
 			if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == FLOOR_TILE ||
 					floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == STAIR_TILE) && 
@@ -115,6 +135,8 @@ public class Player {
 			if (downFrame == 4) //once it gets to end of animation roll, reset
 				downFrame = 0;
 			
+			directionFaced = "down";
+			
 			if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE ||
 					floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE) && 
 					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == null){
@@ -144,6 +166,8 @@ public class Player {
 			rightFrame++;
 			if (rightFrame == 4) //once it gets to end of animation roll, reset
 				rightFrame = 0;
+			
+			directionFaced = "right";
 			
 			if ((floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == FLOOR_TILE ||
 					floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == STAIR_TILE) && 
@@ -181,6 +205,8 @@ public class Player {
 			leftFrame++;
 			if (leftFrame == 4) //once it gets to end of animation roll, reset
 				leftFrame = 0;
+			
+			directionFaced = "left";
 			
 			if ((floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE ||
 					floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE) && 
@@ -247,14 +273,17 @@ public class Player {
 		
 	}
 	
-	public void pickUpItem(Item item){
+	public void pickUpItem(Item item, Floor floor){
 		if (itemsInInventory < 10){
 			for (int i = 0; inventorySpaces[i] != false; i++){
 				inventory[i] = item;
 			}
 		}
+		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = null;
+		floor.itemsOnFloor.remove(item);
 	}
 	
+	//inventorySpace refers to the position in your inventory of the item being dropped i.e. the first item in your inventory is 0, next is 1, etc.
 	public void dropItem(Item item, Floor floor, int inventorySpace){
 		inventory[inventorySpace] = null;
 		inventorySpaces[inventorySpace] = false;
@@ -265,22 +294,53 @@ public class Player {
 			else if (item instanceof Armor)
 				equippedArmor = null;
 		}
-		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = item;
+		floor.itemLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE] = item;
+		floor.itemsOnFloor.add(item);
 	}
 	
-	public void attack(Player enemy, SpriteBatch batch){
+	public void attack(Player enemy, SpriteBatch batch, Floor floor){
 		if (equippedWeapon != null){
 			this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
 			this.equippedWeapon.itemSprite.draw(batch);
 			this.equippedWeapon.itemSprite.rotate(90);
 		}
 		enemy.setHealth(enemy.getHealth()-this.getAtk()); //Fix this up later
+		System.out.println(enemy.getHealth());
 		if (enemy instanceof Enemy)
 			((Enemy) enemy).gotAttacked = true;
+		if (enemy.getHealth() <= 0){
+			enemy.die(floor);
+		}
 	}
 	
-	public void castFireball(){
+	public void castFireball(String direction, Floor floor, SpriteBatch batch){
 		if (this.getMana() >= 30){
+			fireballSprite = new Sprite(fireballAnimation[0]);
+			int animationRoll = 0;
+			if (direction == "right"){
+				fireballSprite.rotate(270);
+				fireballSprite.setPosition(this.x2, this.y1);
+//				while (floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] == null)
+				while (floor.floorLayout[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] == 15){
+					fireballSprite.draw(batch);
+					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
+					fireballSprite.translateX(8);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
+					
+			}
+			else if (direction == "left"){
+				fireballSprite.rotate(90);
+				
+			}
+			else if (direction == "up"){
+				fireballSprite.rotate(180);
+				
+			}
+			else if (direction == "down"){
+				
+			}
 			
 			this.setMana(this.getMana() - 30);
 		}
@@ -288,6 +348,7 @@ public class Player {
 	
 	public void castIceLance(){
 		if (this.getMana() >= 30){
+			
 			
 			this.setMana(this.getMana() - 30);
 		}
@@ -300,6 +361,19 @@ public class Player {
 				this.setHealth(100);
 			this.setMana(this.getMana() - 30);
 		}
+	}
+	
+	private void setUpSpells(){
+		for(int i = 0; i < 4; i++){
+			fireballAnimation[i] = new TextureRegion(fireballTexture, i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
+			iceLanceAnimation[i] = new TextureRegion(fireballTexture, i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
+		}
+	}
+	
+	public void die(Floor floor){
+		
+		//code to bring up death screen, maybe a death animation
+		
 	}
 	
 	public int getLvl(){

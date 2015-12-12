@@ -56,7 +56,7 @@ public class Game implements ApplicationListener {
 
     public void render () {
 
-    	handleInput();
+//    	handleInput();
     	camera.update();
     	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
     	batch.begin();
@@ -65,6 +65,7 @@ public class Game implements ApplicationListener {
         floor.drawItems(batch);
         floor.drawEnemies(batch);
         player.drawPlayer(batch);
+        handleInput();
         batch.end();
     	
     }
@@ -86,9 +87,9 @@ public class Game implements ApplicationListener {
     public void dispose () {
     }
     
-//    public static void main(String[] args){
-//    	new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
-//    }
+    public static void main(String[] args){
+    	new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
+    }
     
     private void handleInput() {
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
@@ -114,6 +115,36 @@ public class Game implements ApplicationListener {
     		moveCamera();
     		processTurn();
     		checkForStairs();
+    	}
+//    	if (Gdx.input.isKeyJustPressed(Keys.Q)){
+//    		player.castFireball("right", floor, batch);
+//    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.D)){
+    		if (player.directionFaced == "right"){
+    			if (floor.characterLocations[player.x1 / TILE_SIZE + 1][player.y1 / TILE_SIZE] != null){
+    				player.attack(floor.characterLocations[player.x1 / TILE_SIZE + 1][player.y1 / TILE_SIZE], batch, floor);
+    			}
+    		}
+    		else if (player.directionFaced == "left"){
+    			if (floor.characterLocations[player.x1 / TILE_SIZE - 1][player.y1 / TILE_SIZE] != null){
+    				player.attack(floor.characterLocations[player.x1 / TILE_SIZE - 1][player.y1 / TILE_SIZE], batch, floor);
+    			}
+    		}
+			else if (player.directionFaced == "up"){
+    			if (floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE + 1] != null){
+    				player.attack(floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE + 1], batch, floor);
+    			}
+			}
+			else if (player.directionFaced == "down"){
+    			if (floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE - 1] != null){
+    				player.attack(floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE - 1], batch, floor);
+    			}
+			}
+		}
+    	//The E key should be interact (bring up options i.e. pick up item, view item stats, etc. , but this is for testing
+    	if (Gdx.input.isKeyJustPressed(Keys.E)){
+    		//player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE]);
+    		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
     	}
 
     }
@@ -160,9 +191,10 @@ public class Game implements ApplicationListener {
     //processes turns for each enemy
     private void processTurn(){
     	
-    	for (int i = 0; i < floor.numEnemiesOnFloor; i++){
-    		floor.enemiesOnFloor[i].AI(player, floor, batch);
+    	for (int i = 0; i < floor.enemiesOnFloor.size(); i++){
+    		floor.enemiesOnFloor.get(i).AI(player, floor, batch);
     	}
+    	
     	
     }
 }

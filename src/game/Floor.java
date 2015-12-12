@@ -1,5 +1,6 @@
 package game;
 
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Vector;
 
@@ -39,10 +40,10 @@ public class Floor{
 	private TextureRegion[] floorTiles = new TextureRegion[20];
 	private Texture stairs = new Texture("assets/Stairs.png");
 	public Item[][] itemLocations = new Item[32][24];
-	public Item[] itemsOnFloor;
 	public int numItemsOnFloor;
-	public Enemy[] enemiesOnFloor;
+	public LinkedList<Item> itemsOnFloor;
 	public int numEnemiesOnFloor;
+	public LinkedList<Enemy> enemiesOnFloor;
 	public Player[][] characterLocations = new Player[32][24];
 	public int floorLevel;
 	
@@ -60,9 +61,9 @@ public class Floor{
 		}
 		
 		numItemsOnFloor = rng.nextInt(3) + 2;
-		itemsOnFloor = new Item[numItemsOnFloor];
+		itemsOnFloor = new LinkedList<Item>();
 		numEnemiesOnFloor = rng.nextInt(3) + 2;
-		enemiesOnFloor = new Enemy[numEnemiesOnFloor];
+		enemiesOnFloor = new LinkedList<Enemy>();
 		
 		int k = 0;
 		//for instantiating our tiles array with each tile of the tileset
@@ -100,7 +101,7 @@ public class Floor{
 					failed = true;
 				}
 			if (!failed){ //if the room above doesn't intercept any rooms, actually make the room
-				createRoom(room, rooms);
+				createRoom(room);
 				if (rooms.size() > 0){
 					prevRoomCenterX = rooms.lastElement().centerX;
 					prevRoomCenterY = rooms.lastElement().centerY;
@@ -119,7 +120,7 @@ public class Floor{
 	}
 	
 	//carves out room in floor array
-	private void createRoom(Room room, Vector<Room> rooms){
+	private void createRoom(Room room){
 		for (int i = room.x1/TILE_SIZE; i <= room.x2/TILE_SIZE; i++){
 			for (int j = room.y1/TILE_SIZE; j <= room.y2/TILE_SIZE; j++){
 				if (i == room.x1/TILE_SIZE && j == room.y1/TILE_SIZE && floorLayout[i][j] == EMPTY_TILE)
@@ -628,28 +629,35 @@ public class Floor{
 	
 	public void placeItems(){		
 		for (int i = 0; i < numItemsOnFloor; i++){
-			Weapon weapon = new Weapon(floorLevel, findOpenSpace());
-			itemsOnFloor[i] = weapon;
+			Weapon weapon = new Weapon(this, findOpenSpace());
+			itemsOnFloor.add(weapon);
 		}
 	}
 	
 	public void drawItems(SpriteBatch batch){
-		for (int i = 0; i < numItemsOnFloor; i++){
-			itemsOnFloor[i].itemSprite.draw(batch);
+//		for (int i = 0; i < 32; i++){
+//			for (int j = 0; j < 24; j++){
+//				if (this.itemLocations[i][j] != null){
+//					this.itemLocations[i][j].itemSprite.draw(batch);
+//				}
+//			}
+//		}
+		for (int i = 0; i < itemsOnFloor.size(); i++){
+			itemsOnFloor.get(i).itemSprite.draw(batch);
 		}
 	}
 	
 	public void placeEnemies(){
 		for (int i = 0; i < numEnemiesOnFloor; i++){
 			int[] coordinates = findOpenSpace();
-			Enemy enemy = new Enemy(coordinates[0], coordinates[1], coordinates[0] + TILE_SIZE, coordinates[1] + 64, this);
-			enemiesOnFloor[i] = enemy;
+			Enemy enemy = new Enemy(coordinates[0], coordinates[1], coordinates[0] + TILE_SIZE, coordinates[1] + TILE_SIZE, this);
+			enemiesOnFloor.add(enemy);
 		}
 	}
 	
 	public void drawEnemies(SpriteBatch batch){
-		for (int i = 0; i < numEnemiesOnFloor; i++){
-			enemiesOnFloor[i].character.draw(batch);
+		for (int i = 0; i < enemiesOnFloor.size(); i++){
+			enemiesOnFloor.get(i).character.draw(batch);
 		}
 	}
 	
@@ -665,4 +673,5 @@ public class Floor{
 		else if (cornerRng == 3)
 			floorLayout[this.rooms.get(roomRng).x1/TILE_SIZE + 1][this.rooms.get(roomRng).y1/TILE_SIZE + 1] = STAIR_TILE;
 	}
+	
 }
