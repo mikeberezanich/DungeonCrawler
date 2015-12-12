@@ -13,6 +13,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+
 import javax.swing.JFrame;
 
 public class TitleScreen extends JPanel implements ActionListener {
@@ -59,7 +62,7 @@ public class TitleScreen extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		Object a = event.getSource();
 		if(a == startButton){
-			new Game();
+			new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
 			this.menuScreen.dispose();
 		}
 		

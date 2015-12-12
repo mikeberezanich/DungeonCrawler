@@ -86,9 +86,9 @@ public class Game implements ApplicationListener {
     public void dispose () {
     }
     
-    public static void main(String[] args){
-    	new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
-    }
+//    public static void main(String[] args){
+//    	new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
+//    }
     
     private void handleInput() {
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
