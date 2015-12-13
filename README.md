@@ -4,19 +4,20 @@
 <br>
 <br>To Do List:
 <ul>
-<li>Add death screen</li>
-<li>Add high score screen</li>
 <li>Create menus</li>
 <li>Create interaction between player and objects</li>
 <li>Create armor</li>
 <li>Spawn armor</li>
+<li>Create potions</li>
+<li>Spawn potions</li>
 <li>Add spells</li>
 <li>Add stones/orbs </li>
 <li>Show damage done/recieved upon attacks</li>
-<li>Improve enemy tracking</li>
 </ul>
 <br>Bugs:
 <ul>
+<li>Game window doesn't close on death</li>
+<li>New game button doesn't work after death</li>
 <li>Rarely, a room will not successfully get corridors carved to it (If we cannot fix this, perhaps add a new floor button)
 <li>A line is sometimes drawn across the screen depending on the display</li>
 <li>Some floor rendering errors with the wrong tiles being drawn</li>
