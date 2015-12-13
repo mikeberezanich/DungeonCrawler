@@ -22,7 +22,7 @@ public class Floor{
 	public Vector<Room> rooms;
 	public static final int TILE_SIZE = 32;
 	public static final int FLOOR_TILE = 15;
-	public static final int EMPTY_TILE = 16;
+	public static final int EMPTY_TILE = 29;
 	public static final int VERT_CORR_TILE = 20;
 	public static final int VERT_CORR_TOP_DOOR_TILE = 21;
 	public static final int VERT_CORR_BOTTOM_DOOR_TILE = 22;
@@ -319,10 +319,12 @@ public class Floor{
 						floorLayout[i+1][j] = 11;
 					if (floorLayout[i-1][j] == EMPTY_TILE)
 						floorLayout[i-1][j] = 10;
+					if (floorLayout[i][j-1] == 11)
+						floorLayout[i][j-1] = 8;
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
 						floorLayout[i+1][j+1] = 11; //this doesn't seem to work for some reason
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j-1] == 8 && floorLayout[i+1][j-1] != 11)
-						floorLayout[i+1][j+1] = 14;
+						floorLayout[i+1][j+1] = 14; //this doesn't seem to work for some reason
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j-1] < 7 && floorLayout[i+1][j-1] != 11)
 						floorLayout[i+1][j-1] = 14;
 					if (floorLayout[i-1][j] == 10 && floorLayout[i][j-1] < 8)
@@ -341,8 +343,6 @@ public class Floor{
 						floorLayout[i+1][j] = 8;
 					if (floorLayout[i+1][j] == 14)
 						floorLayout[i+1][j] = 11;
-					if (floorLayout[i][j-1] == 11)
-						floorLayout[i][j-1] = 8;
 					if (floorLayout[i][j-1] == 14)
 						floorLayout[i][j-1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 11)
@@ -379,6 +379,14 @@ public class Floor{
 						floorLayout[i+1][j-1] = 8;
 					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 12)
 						floorLayout[i-1][j-1] = 9;
+//					if (floorLayout[i+1][j+1] < 7 && floorLayout[i-1][j+1] < 7)
+//						floorLayout[i][j+1] = rng.nextInt(7);
+					if (floorLayout[i][j+1] == 10 && floorLayout[i-1][j+1] < 7)
+						floorLayout[i][j+1] = rng.nextInt(7);
+					if (floorLayout[i][j+1] < 7 && floorLayout[i+1][j] == 11 && floorLayout[i+1][j+1] == EMPTY_TILE)
+						floorLayout[i+1][j+1] = 11;
+					if (floorLayout[i+1][j+1] == 12 && (floorLayout[i+1][j+1] == FLOOR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_LEFT_DOOR_TILE))
+						floorLayout[i+1][j+1] = rng.nextInt(7);	
 					
 				}
 				else if (floorLayout[i][j] == VERT_CORR_TILE){
@@ -388,7 +396,7 @@ public class Floor{
 						floorLayout[i+1][j] = 11;
 					if (floorLayout[i-1][j] == 11)
 						floorLayout[i-1][j] = 12;
-					if (floorLayout[i+1][j] == 10)
+					if (floorLayout[i+1][j] == 10) //This may be wrong?
 						if (floorLayout[i+1][j+1] == FLOOR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_LEFT_DOOR_TILE)
 							floorLayout[i+1][j] = rng.nextInt(7);
 						else
@@ -401,8 +409,8 @@ public class Floor{
 						floorLayout[i-1][j] = EMPTY_TILE;
 					if (floorLayout[i+1][j] == 13)
 						floorLayout[i+1][j] = 17;
-					if (floorLayout[i-1][j] == 7)
-						floorLayout[i-1][j] = 9;
+//					if (floorLayout[i-1][j] == 7)
+//						floorLayout[i-1][j] = 9;
 					if (floorLayout[i+1][j] == 8)
 						floorLayout[i+1][j] = 12;
 					if (floorLayout[i+1][j] == 7)
@@ -470,6 +478,10 @@ public class Floor{
 						floorLayout[i][j-1] = rng.nextInt(7);
 					if (floorLayout[i][j-1] == 13)
 						floorLayout[i][j-1] = rng.nextInt(7);
+					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] == 12)
+						floorLayout[i][j-1] = 9;
+					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] < 7 && (floorLayout[i-1][j-1] == FLOOR_TILE || floorLayout[i-1][j-1] == VERT_CORR_TILE))
+						floorLayout[i][j-1] = 9;
 				}
 				else if (floorLayout[i][j] == HORIZ_CORR_RIGHT_DOOR_TILE){
 					if (floorLayout[i][j-1] == 11)
@@ -486,6 +498,9 @@ public class Floor{
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
 						floorLayout[i+1][j+1] = 11;
+					if (floorLayout[i][j+1] < 7 && floorLayout[i][j+2] < 7)
+						floorLayout[i][j+2] = 8;
+					
 				}
 				else if (floorLayout[i][j] == HORIZ_CORR_LEFT_DOOR_TILE){
 					if (floorLayout[i][j-1] == 10)
@@ -498,6 +513,13 @@ public class Floor{
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 12)
 						floorLayout[i][j+1] = rng.nextInt(7);
+				}
+				else if (floorLayout[i][j] == 17){
+					if (floorLayout[i][j+2] == FLOOR_TILE || floorLayout[i][j+2] == HORIZ_CORR_TILE || floorLayout[i][j+2] == HORIZ_CORR_LEFT_DOOR_TILE)
+						floorLayout[i][j+1] = 9;
+					if (floorLayout[i][j+2] == 12)
+						floorLayout[i][j+1] = 12;
+						
 				}
 				
 			}
@@ -597,6 +619,9 @@ public class Floor{
 				else if (floorLayout[i][j] == EMPTY_TILE){
 					batch.draw(floorTiles[EMPTY_TILE], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
+				else if (floorLayout[i][j] == 16){
+					batch.draw(floorTiles[16], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+				}
 				else if (floorLayout[i][j] == 17){
 					batch.draw(floorTiles[17], i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 				}
@@ -616,21 +641,34 @@ public class Floor{
 	
 	//can be used for finding open space to place items at, returns array of [x-coordinate, y-coordinate]
 	public int[] findOpenSpace(){
-		int i = rng.nextInt(31);
-		int j = rng.nextInt(23);
+		int i = rng.nextInt(32);
+		int j = rng.nextInt(24);
 		
 		while (floorLayout[i][j] != FLOOR_TILE && itemLocations[i][j] == null && characterLocations[i][j] == null){
-			i = rng.nextInt(31);
-			j = rng.nextInt(23);
+			i = rng.nextInt(32);
+			j = rng.nextInt(24);
 		}
 		
 		return new int[] {i * TILE_SIZE, j * TILE_SIZE};
 	}
 	
-	public void placeItems(){		
+	public void placeItems(){
+		int itemRng;
+		Item item;
+		
 		for (int i = 0; i < numItemsOnFloor; i++){
-			Weapon weapon = new Weapon(this, findOpenSpace());
-			itemsOnFloor.add(weapon);
+			itemRng = rng.nextInt(10);
+			if (itemRng < 3){
+				item = new Weapon(this, findOpenSpace());
+			}
+			else if (itemRng < 6){
+				item = new Armor(this, findOpenSpace());
+			}
+			else{
+				item = new Potion(this, findOpenSpace());
+			}
+			
+			itemsOnFloor.add(item);
 		}
 	}
 	

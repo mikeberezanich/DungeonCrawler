@@ -1,5 +1,6 @@
 package game;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.lwjgl.opengl.Display;
@@ -59,8 +60,8 @@ public class Player {
 		y2 = Y;
 		
 		setHealth(100);
-		setAtk(5);
-		setDef(5);
+		setAtk(15);
+		setDef(15);
 		directionFaced = "down";
 		isDead = false;
 		
@@ -87,10 +88,6 @@ public class Player {
 			}
 		}
 		
-	}
-	
-	public void setGame(Game g){
-		game = g;
 	}
 	
 	public void drawPlayer(SpriteBatch batch){
@@ -255,6 +252,7 @@ public class Player {
 				equippedWeapon = item;
 				setAtk(atk + item.strength);
 			}
+			equipmentWeight += item.weight;
 		}
 		else if (item instanceof Armor){
 			if (equippedArmor == null){
@@ -266,8 +264,9 @@ public class Player {
 				equippedWeapon = item;
 				setDef(def + item.strength);
 			}
+			equipmentWeight += item.weight;
 		}
-		equipmentWeight += item.weight;
+		
 	}
 	public void unequipItem(Item item){
 		if (item.isEquipped){
@@ -285,7 +284,16 @@ public class Player {
 	}
 	
 	public void usePotion(Potion potion){
-		
+		if(potion.classification == Potion.HEALTH_POTION){
+			setHealth(getHealth() + 50);
+			if (getHealth() > 100)
+				setHealth(100);
+		}
+		else if (potion.classification == Potion.MANA_POTION){
+			setMana(getMana() + 50);
+			if (getMana() > 100)
+				setMana(100);
+		}
 	}
 	
 	public void pickUpItem(Item item, Floor floor){
@@ -314,6 +322,10 @@ public class Player {
 	}
 	
 	public void attack(Player enemy, SpriteBatch batch, Floor floor){
+		
+		int damageDealt;
+		Random damageRng = new Random();
+		
 		if (equippedWeapon != null){
 			this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
 			this.equippedWeapon.itemSprite.rotate(-45);
@@ -323,7 +335,10 @@ public class Player {
 			}
 			this.equippedWeapon.itemSprite.rotate(135);
 		}
-		enemy.setHealth(enemy.getHealth()-this.getAtk()); //Fix this up later
+		damageDealt = this.getAtk() + 3 - damageRng.nextInt(7) - enemy.getDef(); 
+		if (damageDealt < 0)
+			damageDealt = 0;
+		enemy.setHealth(enemy.getHealth()-damageDealt);
 		
 		if (enemy instanceof Enemy){
 			((Enemy) enemy).gotAttacked = true;

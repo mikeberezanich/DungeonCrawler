@@ -23,3 +23,5 @@ Wall Texture Set - Inanzen http://opengameart.org/
 Panda Character Texture Set - @danielmahon
 Magical Theme Song - remaxim
 Items - rcorre https://github.com/rcorre
+Zombie n Skeleton 2 - Reemax / Artisticdude
+DO Items - David E. Gervais

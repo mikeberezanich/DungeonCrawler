@@ -13,7 +13,7 @@ public class Weapon extends Item {
 	public TextureRegion axeSprites =  new TextureRegion(itemSpritesheet, 0, 2 * TILE_SIZE, 6 * TILE_SIZE, 3 * TILE_SIZE);
 	
 	public Weapon(Floor floor, int[] coordinates) {
-		super(coordinates);
+		super();
 		
 		classification = itemRng.nextInt(3);
 		

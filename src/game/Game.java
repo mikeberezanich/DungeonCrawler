@@ -43,17 +43,11 @@ public class Game implements ApplicationListener {
         floor = new Floor(floorLevel);
         positionRng = rng.nextInt(floor.rooms.size() - 1);
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
-        player.setGame(this);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
         floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
         moveCamera();
-        try {
-			connection = new DatabaseConnection().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
     }
 
     public void render () {

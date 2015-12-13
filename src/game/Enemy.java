@@ -23,7 +23,7 @@ public class Enemy extends Player{
 	
 	public Enemy(int x, int y, int X, int Y, Floor floor) {
 		super(x, y, X, Y);
-		setAtk(5);           //replace these 5's with some floorLevel based stats
+		setAtk(20);           //replace these 5's with some floorLevel based stats
 		setDef(5);
 		
 		int k = 0;
@@ -392,14 +392,14 @@ public class Enemy extends Player{
 				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE - i] == player) ||
 				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE - i] == player) ||
 				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE + i] == player) || 
-				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i - 1][this.y1 / TILE_SIZE + 1] == player) ||
-				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + 2 < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i - 2][this.y1 / TILE_SIZE + 2] == player) ||
-				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i + 1][this.y1 / TILE_SIZE + 1] == player) ||
-				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE + 2 < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i + 2][this.y1 / TILE_SIZE + 2] == player) ||
-				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i - 1][this.y1 / TILE_SIZE - 1] == player) ||
-				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE - 2 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i - 2][this.y1 / TILE_SIZE - 2] == player) ||
-				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i + 1][this.y1 / TILE_SIZE - 1] == player) ||
-				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE - 2 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i + 2][this.y1 / TILE_SIZE - 2] == player))
+				(this.x1 / TILE_SIZE + i < 32 && this.x1 / TILE_SIZE - 1 >= 0 && this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i - 1][this.y1 / TILE_SIZE + 1] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.x1 / TILE_SIZE - 2 >= 0 && this.y1 / TILE_SIZE + 2 < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i - 2][this.y1 / TILE_SIZE + 2] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.x1 / TILE_SIZE  + 1 < 32 && this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i + 1][this.y1 / TILE_SIZE + 1] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.x1 / TILE_SIZE  + 2 < 32 && this.y1 / TILE_SIZE + 2 < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i + 2][this.y1 / TILE_SIZE + 2] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.x1 / TILE_SIZE - 1 >= 0 && this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i - 1][this.y1 / TILE_SIZE - 1] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.x1 / TILE_SIZE - 2 >= 0 && this.y1 / TILE_SIZE - 2 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i - 2][this.y1 / TILE_SIZE - 2] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.x1 / TILE_SIZE  + 1 < 32 && this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i + 1][this.y1 / TILE_SIZE - 1] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.x1 / TILE_SIZE  + 2 < 32 && this.y1 / TILE_SIZE - 2 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i + 2][this.y1 / TILE_SIZE - 2] == player))
 				return true;
 		}
 		
