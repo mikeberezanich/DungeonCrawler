@@ -10,6 +10,9 @@
 <li>Create interaction between player and objects</li>
 <li>Create armor</li>
 <li>Spawn armor</li>
+<li>Add spells</li>
+<li>Add stones/orbs </li>
+<li>Create attacking animations (Animated weapon above head, damage shown)</li>
 </ul>
 <br>Bugs:
 <ul>
