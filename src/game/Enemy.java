@@ -2,6 +2,7 @@ package game;
 
 import java.util.Random;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,6 +16,10 @@ public class Enemy extends Player{
 	private TextureRegion zombieSprites = new TextureRegion(enemySpritesheet, 0, 0, 3 * TILE_SIZE, 192);
 //	private TextureRegion skeletonSprites = new TextureRegion(enemySpritesheet, 3 * TILE_SIZE, 0, 6 * TILE_SIZE, 256);
 	private TextureRegion[] enemyAnimation = new TextureRegion[12];
+	public static int LEFT = 0;
+	public static int RIGHT = 1;
+	public static int UP = 2;
+	public static int DOWN = 3;
 	
 	public Enemy(int x, int y, int X, int Y, Floor floor) {
 		super(x, y, X, Y);
@@ -39,19 +44,19 @@ public class Enemy extends Player{
 		
 		if (gotAttacked){
 			if (isAdjacentToPlayer(floor, player)){
-//				attack(player, batch);
+				attack(player, batch, floor);
 			}
 			else{
-				moveTowardsPlayer(floor);
+				moveTowardsPlayer(player, floor);
 			}
 		}
 		else{
 			if(checkForPlayer(player, floor)){
 				if (isAdjacentToPlayer(floor, player)){
-//					attack(player, batch);
+					attack(player, batch, floor);
 				}
 				else{
-					moveTowardsPlayer(floor);
+					moveTowardsPlayer(player, floor);
 				}
 			}
 			else{
@@ -67,7 +72,7 @@ public class Enemy extends Player{
 		
 		//the && conditions are to avoid going out of bounds of the array
 		if((this.x1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - 1][this.y1 / TILE_SIZE] == player) ||
-		   (this.x1 / TILE_SIZE + 1 < 32 && floor.characterLocations[this.x2 / TILE_SIZE + 1][this.y1 / TILE_SIZE] == player) ||
+		   (this.x1 / TILE_SIZE + 1 < 32 && floor.characterLocations[this.x1 / TILE_SIZE + 1][this.y1 / TILE_SIZE] == player) ||
 		   (this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - 1] == player) ||
 		   (this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + 1] == player)){
 			isAdjacent = true;
@@ -116,7 +121,7 @@ public class Enemy extends Player{
 						leftFrame = 0;
 				}
 					break;
-//			
+	
 			case 1: if ((floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == FLOOR_TILE ||
 						floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == STAIR_TILE) && 
 						floor.characterLocations[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == null){
@@ -146,7 +151,7 @@ public class Enemy extends Player{
 							rightFrame = 0;
 					}
 					break;
-//		
+		
 			case 2: if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == FLOOR_TILE ||
 						floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == STAIR_TILE) && 
 						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == null){
@@ -177,7 +182,7 @@ public class Enemy extends Player{
 							upFrame = 0;
 					}
 					break;
-//			
+			
 			case 3: if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE ||
 						floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE) && 
 						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == null){
@@ -212,8 +217,150 @@ public class Enemy extends Player{
 		}
 	}
 	
-	public void moveTowardsPlayer(Floor floor){
+	public void moveTowardsPlayer(Player player, Floor floor){
+		int[] directionsToMove = new int[4];
+		int i = 0;
+		boolean canMove = false;
 		
+		if (player.x1 < this.x1){
+			directionsToMove[i++] = LEFT;
+		}
+		if (player.x1 > this.x1){
+			directionsToMove[i++] = RIGHT;
+		}
+		if (player.y1 > this.y1){
+			directionsToMove[i++] = UP;
+		}
+		if (player.y1 < this.y1){
+			directionsToMove[i++] = DOWN;
+		}
+		
+		for (int j = 0; j <= i && !canMove; j++){
+			switch(directionsToMove[j]){
+			case 0: if ((floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE ||
+					floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE) && 
+					floor.characterLocations[x1 / TILE_SIZE - 1][y1 / TILE_SIZE] == null){
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+					character.translateX(-TILE_SIZE);
+					x1 -= TILE_SIZE;
+					x2 -= TILE_SIZE;
+					floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+					directionFaced = "left";
+					canMove = true;
+					
+					//reset the animations for other directions
+					downFrame = 0;
+					upFrame = 0;
+					rightFrame = 0;
+					
+					if (leftFrame == 0)
+						character.setRegion(enemyAnimation[4]);
+					else if (leftFrame == 1)
+						character.setRegion(enemyAnimation[3]);
+					else if (leftFrame == 2)
+						character.setRegion(enemyAnimation[4]);
+					else if (leftFrame == 3)
+						character.setRegion(enemyAnimation[5]);
+					leftFrame++;
+					if (leftFrame == 4) //once it gets to end of animation roll, reset
+						leftFrame = 0;
+				}
+					break;
+	
+			case 1: if ((floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == FLOOR_TILE ||
+						floor.floorLayout[x1/TILE_SIZE + 1][y1/TILE_SIZE] == STAIR_TILE) && 
+						floor.characterLocations[x1 / TILE_SIZE + 1][y1 / TILE_SIZE] == null){
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+						character.translateX(TILE_SIZE);
+						x1 += TILE_SIZE;
+						x2 += TILE_SIZE;
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+						directionFaced = "right";
+						canMove = true;
+						
+						//reset the animations for other directions
+						downFrame = 0;
+						upFrame = 0;
+						leftFrame = 0;
+						
+						if (rightFrame == 0)
+							character.setRegion(enemyAnimation[7]);
+						else if (rightFrame == 1)
+							character.setRegion(enemyAnimation[8]);
+						else if (rightFrame == 2)
+							character.setRegion(enemyAnimation[7]);
+						else if (rightFrame == 3)
+							character.setRegion(enemyAnimation[6]);
+						rightFrame++;
+						if (rightFrame == 4) //once it gets to end of animation roll, reset
+							rightFrame = 0;
+					}
+					break;
+		
+			case 2: if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == FLOOR_TILE ||
+						floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE + 1] == STAIR_TILE) && 
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE + 1] == null){
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+						character.translateY(TILE_SIZE);
+						y1 += TILE_SIZE;
+						y2 += TILE_SIZE;
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+						directionFaced = "up";
+						canMove = true;
+						
+						//reset the animations for other directions
+						downFrame = 0;
+						rightFrame = 0;
+						leftFrame = 0;
+						
+						//Code to handle the animation
+						if (upFrame == 0)
+							character.setRegion(enemyAnimation[10]);
+						else if (upFrame == 1)
+							character.setRegion(enemyAnimation[9]);
+						else if (upFrame == 2)
+							character.setRegion(enemyAnimation[10]);
+						else if (upFrame == 3)
+							character.setRegion(enemyAnimation[11]);
+						upFrame++;
+						if (upFrame == 4) //once it gets to end of animation roll, reset
+							upFrame = 0;
+					}
+					break;
+			
+			case 3: if ((floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == FLOOR_TILE ||
+						floor.floorLayout[x1/TILE_SIZE][y1/TILE_SIZE - 1] == STAIR_TILE) && 
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE - 1] == null){
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = null;
+						character.translateY(-TILE_SIZE);
+						y1 -= TILE_SIZE;
+						y2 -= TILE_SIZE;
+						floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
+						directionFaced = "down";
+						canMove = true;
+						
+						//reset the animations for other directions
+						upFrame = 0;
+						rightFrame = 0;
+						leftFrame = 0;
+						
+						//Code to handle the animation
+						if (downFrame == 0)
+							character.setRegion(enemyAnimation[1]);
+						else if (downFrame == 1)
+							character.setRegion(enemyAnimation[0]);
+						else if (downFrame == 2)
+							character.setRegion(enemyAnimation[1]);
+						else if (downFrame == 3)
+							character.setRegion(enemyAnimation[2]);
+						downFrame++;
+						if (downFrame == 4) //once it gets to end of animation roll, reset
+							downFrame = 0;
+					}
+					break;
+			}
+		
+		}
 	}
 	
 	public boolean checkForPlayer(Player player, Floor floor){
@@ -259,5 +406,6 @@ public class Enemy extends Player{
 		//maybe add a death animation or corpse left over
 		
 	}
+
 	
 }

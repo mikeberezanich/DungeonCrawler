@@ -23,6 +23,13 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GLContext;
+
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.sun.java.swing.plaf.windows.resources.windows;
+
 class JTextFieldLimit extends PlainDocument {
 	  private int limit;
 	  JTextFieldLimit(int limit) {
@@ -55,7 +62,9 @@ public class GameOver extends JPanel implements ActionListener {
 	private Container container;
 	private JTextField enterInitials;
 	private JLabel background;
+	
 	public GameOver() throws Exception{
+		
 		Font font = new Font("TimesRoman", Font.BOLD, 48);
 		enterInitials = new JTextField();
 		enterInitials.setBounds(272,150,96,60);
@@ -148,7 +157,7 @@ public class GameOver extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		Object a = event.getSource();
 		if(a == playButton){
-			new Game();
+			new LwjglApplication(new Game(), "Wrath of the Ascendant", 1024, 768);
 			this.menuScreen.dispose();
 		}
 		else if(a == scoreButton){

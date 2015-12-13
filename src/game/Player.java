@@ -1,5 +1,9 @@
 package game;
 
+import org.lwjgl.opengl.Display;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -40,6 +44,8 @@ public class Player {
 	private TextureRegion[] iceLanceAnimation = new TextureRegion[4];
 	private Sprite iceLanceSprite;
 	public String directionFaced;
+	public boolean isDead;
+	public Game game;
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -52,6 +58,7 @@ public class Player {
 		setAtk(5);
 		setDef(5);
 		directionFaced = "down";
+		isDead = false;
 		
 		//This is an ugly way of differentiating between the player and enemies, which extend the player
 		if (this instanceof Enemy){
@@ -76,6 +83,10 @@ public class Player {
 			}
 		}
 		
+	}
+	
+	public void setGame(Game g){
+		game = g;
 	}
 	
 	public void drawPlayer(SpriteBatch batch){
@@ -309,7 +320,7 @@ public class Player {
 		if (enemy instanceof Enemy)
 			((Enemy) enemy).gotAttacked = true;
 		if (enemy.getHealth() <= 0){
-			enemy.die(floor);
+			enemy.die(floor, game);
 		}
 	}
 	
@@ -370,17 +381,23 @@ public class Player {
 		}
 	}
 	
-	public void die(Floor floor){
+	public void die(Floor floor, Game game){
 		
+		isDead = true;
 		//code to bring up death screen, maybe a death animation
 		
 		//need to pass the score to this eventually
 		try {
 			new GameOver();
+			game.dispose();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
+		//window.stop();
+		//window.exit();
 		
 	}
 	

@@ -34,6 +34,7 @@ public class Game implements ApplicationListener {
 	private Random rng = new Random();
 	public Connection connection;
 	public int floorLevel;
+	LwjglApplication window;
 	
     public void create () {
 
@@ -42,6 +43,7 @@ public class Game implements ApplicationListener {
         floor = new Floor(floorLevel);
         positionRng = rng.nextInt(floor.rooms.size() - 1);
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
+        player.setGame(this);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
@@ -87,6 +89,10 @@ public class Game implements ApplicationListener {
     public void dispose () {
     }
     
+    public void setWindow(LwjglApplication w){
+    	window = w;
+    }
+    
     public static void main(String[] args){
     	new LwjglApplication(new Game(), "Dungeon Crawler", 1024, 768);
     }
@@ -116,9 +122,9 @@ public class Game implements ApplicationListener {
     		processTurn();
     		checkForStairs();
     	}
-//    	if (Gdx.input.isKeyJustPressed(Keys.Q)){
-//    		player.castFireball("right", floor, batch);
-//    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.Q)){
+    		processTurn();
+    	}
     	if (Gdx.input.isKeyJustPressed(Keys.D)){
     		if (player.directionFaced == "right"){
     			if (floor.characterLocations[player.x1 / TILE_SIZE + 1][player.y1 / TILE_SIZE] != null){
