@@ -1,5 +1,7 @@
 package game;
 
+import java.util.concurrent.TimeUnit;
+
 import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 public class Player {
 
@@ -312,15 +316,24 @@ public class Player {
 	public void attack(Player enemy, SpriteBatch batch, Floor floor){
 		if (equippedWeapon != null){
 			this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
-			this.equippedWeapon.itemSprite.draw(batch);
-			this.equippedWeapon.itemSprite.rotate(90);
+			this.equippedWeapon.itemSprite.rotate(-45);
+			for (int i = 1; i <= 6; i++){
+				this.equippedWeapon.itemSprite.rotate(-15);
+				this.equippedWeapon.itemSprite.draw(batch);
+			}
+			this.equippedWeapon.itemSprite.rotate(135);
 		}
 		enemy.setHealth(enemy.getHealth()-this.getAtk()); //Fix this up later
-		System.out.println(enemy.getHealth());
-		if (enemy instanceof Enemy)
+		
+		if (enemy instanceof Enemy){
 			((Enemy) enemy).gotAttacked = true;
+			System.out.println("Enemy health " + enemy.getHealth());
+		}
+		else{
+			System.out.println("Player health " + enemy.getHealth());
+		}
 		if (enemy.getHealth() <= 0){
-			enemy.die(floor, game);
+			enemy.die(floor);
 		}
 	}
 	
@@ -381,7 +394,27 @@ public class Player {
 		}
 	}
 	
-	public void die(Floor floor, Game game){
+	public void changeDirection(String direction){
+		if (direction == "left"){
+			directionFaced = "left";
+			character.setRegion(charAnimation[2]);
+			character.flip(true, false);
+		}
+		else if (direction == "right"){
+			directionFaced = "right";
+			character.setRegion(charAnimation[2]);
+		}
+		else if (direction == "up"){
+			directionFaced = "up";
+			character.setRegion(charAnimation[1]);
+		}
+		else if (direction == "down"){
+			directionFaced = "down";
+			character.setRegion(charAnimation[0]);
+		}
+	}
+	
+	public void die(Floor floor){
 		
 		isDead = true;
 		//code to bring up death screen, maybe a death animation
@@ -389,7 +422,7 @@ public class Player {
 		//need to pass the score to this eventually
 		try {
 			new GameOver();
-			game.dispose();
+//			game.dispose();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

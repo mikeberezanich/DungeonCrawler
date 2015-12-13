@@ -619,7 +619,7 @@ public class Floor{
 		int i = rng.nextInt(31);
 		int j = rng.nextInt(23);
 		
-		while (floorLayout[i][j] != FLOOR_TILE){
+		while (floorLayout[i][j] != FLOOR_TILE && itemLocations[i][j] == null && characterLocations[i][j] == null){
 			i = rng.nextInt(31);
 			j = rng.nextInt(23);
 		}
@@ -635,13 +635,6 @@ public class Floor{
 	}
 	
 	public void drawItems(SpriteBatch batch){
-//		for (int i = 0; i < 32; i++){
-//			for (int j = 0; j < 24; j++){
-//				if (this.itemLocations[i][j] != null){
-//					this.itemLocations[i][j].itemSprite.draw(batch);
-//				}
-//			}
-//		}
 		for (int i = 0; i < itemsOnFloor.size(); i++){
 			itemsOnFloor.get(i).itemSprite.draw(batch);
 		}

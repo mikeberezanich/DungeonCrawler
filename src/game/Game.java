@@ -99,28 +99,48 @@ public class Game implements ApplicationListener {
     
     private void handleInput() {
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
-    		player.movePlayer("up", batch, floor);
-    		moveCamera();
-    		processTurn();
-    		checkForStairs();
+    		if (floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE + 1] instanceof Enemy){
+    			player.changeDirection("up");
+    		}
+    		else{
+	    		player.movePlayer("up", batch, floor);
+	    		moveCamera();
+	    		processTurn();
+	    		checkForStairs();
+    		}
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.DOWN)){
-    		player.movePlayer("down", batch, floor);
-    		moveCamera();
-    		processTurn();
-    		checkForStairs();
+    		if (floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE - 1] instanceof Enemy){
+    			player.changeDirection("down");
+    		}
+    		else{
+	    		player.movePlayer("down", batch, floor);
+	    		moveCamera();
+	    		processTurn();
+	    		checkForStairs();
+    		}
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.RIGHT)){
-    		player.movePlayer("right", batch, floor);
-    		moveCamera();
-    		processTurn();
-    		checkForStairs();
+    		if (floor.characterLocations[player.x1 / TILE_SIZE + 1][player.y1 / TILE_SIZE] instanceof Enemy){
+    			player.changeDirection("right");
+    		}
+    		else{
+	    		player.movePlayer("right", batch, floor);
+	    		moveCamera();
+	    		processTurn();
+	    		checkForStairs();
+    		}
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.LEFT)){
-    		player.movePlayer("left", batch, floor);
-    		moveCamera();
-    		processTurn();
-    		checkForStairs();
+    		if (floor.characterLocations[player.x1 / TILE_SIZE - 1][player.y1 / TILE_SIZE] instanceof Enemy){
+    			player.changeDirection("left");
+    		}
+    		else{
+	    		player.movePlayer("left", batch, floor);
+	    		moveCamera();
+	    		processTurn();
+	    		checkForStairs();
+    		}
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.Q)){
     		processTurn();
@@ -146,10 +166,11 @@ public class Game implements ApplicationListener {
     				player.attack(floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE - 1], batch, floor);
     			}
 			}
+    		processTurn();
 		}
     	//The E key should be interact (bring up options i.e. pick up item, view item stats, etc. , but this is for testing
     	if (Gdx.input.isKeyJustPressed(Keys.E)){
-    		//player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE]);
+    		player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE]);
     		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
     	}
 

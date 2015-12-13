@@ -12,7 +12,8 @@
 <li>Spawn armor</li>
 <li>Add spells</li>
 <li>Add stones/orbs </li>
-<li>Create attacking animations (Animated weapon above head, damage shown)</li>
+<li>Show damage done/recieved upon attacks</li>
+<li>Improve enemy tracking</li>
 </ul>
 <br>Bugs:
 <ul>

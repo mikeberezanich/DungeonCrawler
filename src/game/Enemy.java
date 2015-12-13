@@ -44,6 +44,7 @@ public class Enemy extends Player{
 		
 		if (gotAttacked){
 			if (isAdjacentToPlayer(floor, player)){
+				facePlayer(player, floor);
 				attack(player, batch, floor);
 			}
 			else{
@@ -53,6 +54,7 @@ public class Enemy extends Player{
 		else{
 			if(checkForPlayer(player, floor)){
 				if (isAdjacentToPlayer(floor, player)){
+					facePlayer(player, floor);
 					attack(player, batch, floor);
 				}
 				else{
@@ -370,13 +372,13 @@ public class Enemy extends Player{
 		switch(player.equipmentWeight){
 			case 0:
 			case 1:
-			case 2: distance = 3;
+			case 2: distance = 4;
 					break;
 			case 3:
 			case 4:
-			case 5: distance = 4;
+			case 5: distance = 5;
 					break;
-			default: distance = 5;
+			default: distance = 6;
 					 break;
 		}
 		
@@ -387,14 +389,37 @@ public class Enemy extends Player{
 				(this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + i] == player) ||
 				(this.y1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - i] == player) || 
 				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE + i] == player) ||
-				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + i > 0 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE - i] == player) ||
-				(this.x1 / TILE_SIZE + i >= 0 && this.y1 / TILE_SIZE + i > 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE - i] == player) ||
-				(this.x1 / TILE_SIZE + i >= 0 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE + i] == player))
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE - i] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE - i] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE + i < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE + i] == player) || 
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i - 1][this.y1 / TILE_SIZE + 1] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE + 2 < 24 && floor.characterLocations[this.x1 / TILE_SIZE + i - 2][this.y1 / TILE_SIZE + 2] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE + 1 < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i + 1][this.y1 / TILE_SIZE + 1] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE + 2 < 24 && floor.characterLocations[this.x1 / TILE_SIZE - i + 2][this.y1 / TILE_SIZE + 2] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i - 1][this.y1 / TILE_SIZE - 1] == player) ||
+				(this.x1 / TILE_SIZE + i < 32 && this.y1 / TILE_SIZE - 2 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE + i - 2][this.y1 / TILE_SIZE - 2] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE - 1 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i + 1][this.y1 / TILE_SIZE - 1] == player) ||
+				(this.x1 / TILE_SIZE - i >= 0 && this.y1 / TILE_SIZE - 2 >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i + 2][this.y1 / TILE_SIZE - 2] == player))
 				return true;
 		}
 		
 		//If the above loop doesn't find the player within so many tiles then return false
 		return false;
+	}
+	
+	public void facePlayer(Player player, Floor floor){
+		if(floor.characterLocations[this.x1 / TILE_SIZE - 1][this.y1 / TILE_SIZE] == player){
+			this.character.setRegion(enemyAnimation[4]);
+		}
+		else if(floor.characterLocations[this.x1 / TILE_SIZE + 1][this.y1 / TILE_SIZE] == player){
+			this.character.setRegion(enemyAnimation[7]);
+		}
+		else if(floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE + 1] == player){
+			this.character.setRegion(enemyAnimation[10]);
+		}
+		else if(floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE - 1] == player){
+			this.character.setRegion(enemyAnimation[1]);
+		}
 	}
 	
 	public void die(Floor floor){
