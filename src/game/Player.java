@@ -263,6 +263,7 @@ public class Player {
 				equippedWeapon = item;
 				setAtk(atk + item.strength);
 			}
+			item.isEquipped = true;
 			equipmentWeight += item.weight;
 		}
 		else if (item instanceof Armor){
@@ -271,10 +272,11 @@ public class Player {
 				setDef(def + item.strength);
 			}
 			else {
-				unequipItem(equippedWeapon, floor);
-				equippedWeapon = item;
+				unequipItem(equippedArmor, floor);
+				equippedArmor = item;
 				setDef(def + item.strength);
 			}
+			item.isEquipped = true;
 			equipmentWeight += item.weight;
 		}
 		
