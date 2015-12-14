@@ -482,6 +482,8 @@ public class Floor{
 						floorLayout[i][j-1] = 9;
 					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] < 7 && (floorLayout[i-1][j-1] == FLOOR_TILE || floorLayout[i-1][j-1] == VERT_CORR_TILE))
 						floorLayout[i][j-1] = 9;
+					if (floorLayout[i][j+1] == 12)
+						floorLayout[i][j+1] = rng.nextInt(7);
 				}
 				else if (floorLayout[i][j] == HORIZ_CORR_RIGHT_DOOR_TILE){
 					if (floorLayout[i][j-1] == 11)
