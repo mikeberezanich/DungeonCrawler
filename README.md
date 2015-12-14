@@ -11,7 +11,6 @@
 </ul>
 <br>Bugs:
 <ul>
-<li>Drop item doesn't successfully drop the item</li>
 <li>New game button doesn't always work after death</li>
 <li>Rarely, a room will not successfully get corridors carved to it (If we cannot fix this, perhaps add a new floor button)
 <li>A line is sometimes drawn across the screen depending on the display</li>
