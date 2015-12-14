@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -62,8 +65,8 @@ public class GameOver extends JPanel implements ActionListener {
 	private Container container;
 	private JTextField enterInitials;
 	private JLabel background;
-	
-	public GameOver() throws Exception{
+	private Statement stmt;
+	public GameOver(){
 		
 		Font font = new Font("TimesRoman", Font.BOLD, 48);
 		enterInitials = new JTextField();
@@ -75,11 +78,8 @@ public class GameOver extends JPanel implements ActionListener {
 		enterInitials.setBorder(BorderFactory.createEmptyBorder());
 		enterInitials.setDocument(new JTextFieldLimit(3));
 		
-		// to do
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-
-	    Connection m_Connection = DriverManager.getConnection(
-	        "jdbc:mysql://hoolahanphotography.com:3306/dungeoncrawler", "gameuser", "gamepass");
+		
+		
 	    
 		
 		ImageIcon newGame = new ImageIcon("src\\Assets\\Buttons\\NG1.png");
@@ -154,6 +154,19 @@ public class GameOver extends JPanel implements ActionListener {
 		menuScreen.pack();
 		menuScreen.setVisible(true);
 	}
+	public void publishScores (String initials) throws Exception{
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+	    Connection m_Connection = DriverManager.getConnection(
+	        "jdbc:mysql://hoolahanphotography.com:3306/dungeoncrawler", "gameuser", "gamepass");
+	    PreparedStatement pstmt = m_Connection.prepareStatement("INSERT INTO highscores (name, score) VALUES (?, ?)");
+	    
+	    pstmt.setString(1, initials);
+	    pstmt.setInt(2, Player.score);
+	    pstmt.executeUpdate();
+	    System.out.println("Entry successfully added to database!");
+	    
+	}
 	public void actionPerformed(ActionEvent event) {
 		Object a = event.getSource();
 		if(a == playButton){
@@ -176,8 +189,13 @@ public class GameOver extends JPanel implements ActionListener {
 		else if(a == submitButton){
 			String initials;
 			initials = enterInitials.getText();
-			// need to change this to entering initials and score to database
-			 System.out.println(initials);
+			 try {
+				publishScores(initials);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
 			 
 			 remove(background);
 			 remove(submitButton);
