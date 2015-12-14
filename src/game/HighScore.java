@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+
 public class HighScore extends JPanel implements ActionListener {
 	private JTextArea textScores;
 	private JButton playButton;
@@ -99,7 +101,8 @@ public class HighScore extends JPanel implements ActionListener {
   public void actionPerformed(ActionEvent event) {
 		Object a = event.getSource();
 		if(a == playButton){
-			new Game();
+			new LwjglApplication(new Game(), "Wrath of the Ascendant", 1024, 768);
+			
 			this.highScores.dispose();
 		}
 		else if(a == quitButton){
