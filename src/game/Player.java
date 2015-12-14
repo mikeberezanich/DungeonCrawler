@@ -7,7 +7,9 @@ import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -51,6 +53,10 @@ public class Player {
 	public String directionFaced;
 	public boolean isDead;
 	public Game game;
+	BitmapFont damageFont = new BitmapFont();
+	BitmapFont regenFont = new BitmapFont();
+	CharSequence damageText;
+	CharSequence regenText;
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -64,6 +70,7 @@ public class Player {
 		setDef(15);
 		directionFaced = "down";
 		isDead = false;
+		damageFont.setColor(Color.RED);
 		
 		//This is an ugly way of differentiating between the player and enemies, which extend the player
 		if (this instanceof Enemy){
@@ -287,20 +294,26 @@ public class Player {
 		
 	}
 	
-	public void usePotion(Potion potion, Floor floor){
+	public void usePotion(Potion potion, Floor floor, SpriteBatch batch){
 		floor.itemLocations[(int) (potion.itemSprite.getX() / TILE_SIZE)][(int) (potion.itemSprite.getY() / TILE_SIZE)] = null;
 		floor.itemsOnFloor.remove(potion);
 		
 		if(potion.classification == Potion.HEALTH_POTION){
+			regenFont.setColor(Color.GREEN);
 			setHealth(getHealth() + 50);
+			regenText = "+50";
 			if (getHealth() > 100)
 				setHealth(100);
 		}
 		else if (potion.classification == Potion.MANA_POTION){
+			regenFont.setColor(Color.BLUE);
 			setMana(getMana() + 50);
+			regenText = "+50";
 			if (getMana() > 100)
 				setMana(100);
 		}
+		
+		regenFont.draw(batch, regenText, this.x1 + 8, this.y2 + 16);
 	}
 	
 	public void pickUpItem(Item item, Floor floor){
@@ -361,6 +374,8 @@ public class Player {
 		damageDealt = this.getAtk() + 3 - damageRng.nextInt(7) - enemy.getDef(); 
 		if (damageDealt < 0)
 			damageDealt = 0;
+		damageText = Integer.toString(-damageDealt);
+		damageFont.draw(batch, damageText, enemy.x1 + 8, enemy.y2 + 16);
 		enemy.setHealth(enemy.getHealth()-damageDealt);
 		
 		if (enemy instanceof Enemy){

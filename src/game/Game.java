@@ -51,6 +51,7 @@ public class Game implements ApplicationListener {
         music();
         floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
         moveCamera();
+        Gdx.graphics.setContinuousRendering(false);
     }
 
     public void render () {
@@ -169,13 +170,14 @@ public class Game implements ApplicationListener {
     	if (Gdx.input.isKeyJustPressed(Keys.E)){
     		if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] != null){
     			if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Potion){
-    				player.usePotion((Potion) floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+    				player.usePotion((Potion) floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor, batch);
     			}
     			else{
 		    		player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
 		    		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
     			}
     		}
+    		processTurn();
     	}
 
     }
