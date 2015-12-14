@@ -35,6 +35,8 @@ public class Game implements ApplicationListener {
 	public Connection connection;
 	public int floorLevel;
 	LwjglApplication window;
+	AudioPlayer MGP = AudioPlayer.player;
+    AudioStream BGM;
 	
     public void create () {
 
@@ -43,6 +45,7 @@ public class Game implements ApplicationListener {
         floor = new Floor(floorLevel);
         positionRng = rng.nextInt(floor.rooms.size() - 1);
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
+        player.setGame(this);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
@@ -191,8 +194,8 @@ public class Game implements ApplicationListener {
    //this function just handles starting the music 
    private void music() 
     {       
-        AudioPlayer MGP = AudioPlayer.player;
-        AudioStream BGM;
+//        AudioPlayer MGP = AudioPlayer.player;
+//        AudioStream BGM;
 
         ContinuousAudioDataStream loop = null;
 
@@ -200,6 +203,7 @@ public class Game implements ApplicationListener {
         {
             BGM = new AudioStream(new FileInputStream("src/assets/magical_theme.wav"));
             AudioPlayer.player.start(BGM);
+            System.out.println("music started");
         }
         catch(FileNotFoundException e){
             e.printStackTrace();
@@ -209,7 +213,17 @@ public class Game implements ApplicationListener {
             e.printStackTrace();
         }
         MGP.start(loop);
+        
     }
+   
+   	public void stopMusic(){
+   		try {
+			BGM.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+   	}
     
     //processes turns for each enemy
     private void processTurn(){

@@ -437,16 +437,17 @@ public class Player {
 		//need to pass the score to this eventually
 		try {
 			new GameOver();
-//			game.dispose();
+			Display.destroy();
+			game.stopMusic();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		
-		//window.stop();
-		//window.exit();
-		
+	}
+	
+	public void setGame(Game g){
+		game = g;
 	}
 	
 	public int getLvl(){
@@ -490,5 +491,6 @@ public class Player {
 	public void setMana(int m){
 		mana = m;
 	}
+	
 	
 }
