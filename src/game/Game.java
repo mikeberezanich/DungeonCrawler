@@ -37,7 +37,7 @@ public class Game implements ApplicationListener {
 	LwjglApplication window;
 	AudioPlayer MGP = AudioPlayer.player;
     AudioStream BGM;
-    public int score;
+    public static int score;
 	
     public void create () {
 

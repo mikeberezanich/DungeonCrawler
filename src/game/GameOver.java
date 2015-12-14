@@ -162,7 +162,7 @@ public class GameOver extends JPanel implements ActionListener {
 	    PreparedStatement pstmt = m_Connection.prepareStatement("INSERT INTO highscores (name, score) VALUES (?, ?)");
 	    
 	    pstmt.setString(1, initials);
-	    pstmt.setInt(2, Player.score);
+	    pstmt.setInt(2, Game.score);
 	    pstmt.executeUpdate();
 	    System.out.println("Entry successfully added to database!");
 	    
