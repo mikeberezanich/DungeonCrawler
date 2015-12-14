@@ -58,6 +58,7 @@ public class Player {
 	CharSequence damageText;
 	CharSequence regenText;
 	
+	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
 		x1 = x;
@@ -342,6 +343,7 @@ public class Player {
 				equippedArmor = null;
 		}
 		floor.itemLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE] = item;
+		item.itemSprite.setPosition(this.x1, this.y1);
 		floor.itemsOnFloor.add(item);
 	}
 	
@@ -386,6 +388,8 @@ public class Player {
 			System.out.println("Player health " + enemy.getHealth());
 		}
 		if (enemy.getHealth() <= 0){
+			if (enemy instanceof Enemy)
+				game.score += floor.floorLevel * 10 + 100;
 			enemy.die(floor);
 		}
 	}

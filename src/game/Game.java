@@ -37,10 +37,12 @@ public class Game implements ApplicationListener {
 	LwjglApplication window;
 	AudioPlayer MGP = AudioPlayer.player;
     AudioStream BGM;
+    public int score;
 	
     public void create () {
 
     	floorLevel = 0;
+    	score = 0;
     	batch = new SpriteBatch();
         floor = new Floor(floorLevel);
         positionRng = rng.nextInt(floor.rooms.size() - 1);
@@ -187,6 +189,7 @@ public class Game implements ApplicationListener {
     private void checkForStairs() {
     	if (player.getPositionTile(floor) == 30){
     		floor = new Floor(++floorLevel);
+    		positionRng = rng.nextInt(floor.rooms.size() - 1);
     		player.character.setPosition(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY);
     		player.x1 = (int) player.character.getX();
     		player.x2 = (int) player.character.getX() + TILE_SIZE;
@@ -195,6 +198,7 @@ public class Game implements ApplicationListener {
     		player.moveToNewFloor();
     		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
     		moveCamera();
+    		score += 200 + floorLevel * 10;
     	}
     }
     
