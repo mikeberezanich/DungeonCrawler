@@ -241,14 +241,17 @@ public class Player {
 		character.setRegion(charAnimation[0]);
 	}
 	
-	public void equipItem(Item item){
+	public void equipItem(Item item, Floor floor){
+		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = null;
+		floor.itemsOnFloor.remove(item);
+		
 		if (item instanceof Weapon){
 			if (equippedWeapon == null){
 				equippedWeapon = item;
 				setAtk(atk + item.strength);
 			}
 			else {
-				unequipItem(equippedWeapon);
+				unequipItem(equippedWeapon, floor);
 				equippedWeapon = item;
 				setAtk(atk + item.strength);
 			}
@@ -260,7 +263,7 @@ public class Player {
 				setDef(def + item.strength);
 			}
 			else {
-				unequipItem(equippedWeapon);
+				unequipItem(equippedWeapon, floor);
 				equippedWeapon = item;
 				setDef(def + item.strength);
 			}
@@ -268,7 +271,7 @@ public class Player {
 		}
 		
 	}
-	public void unequipItem(Item item){
+	public void unequipItem(Item item, Floor floor){
 		if (item.isEquipped){
 			if (item instanceof Weapon){
 				setAtk(atk - item.strength);
@@ -279,11 +282,15 @@ public class Player {
 				equippedArmor = null;
 			}
 			equipmentWeight -= item.weight;
+			this.dropItem(item, floor);
 		}
 		
 	}
 	
-	public void usePotion(Potion potion){
+	public void usePotion(Potion potion, Floor floor){
+		floor.itemLocations[(int) (potion.itemSprite.getX() / TILE_SIZE)][(int) (potion.itemSprite.getY() / TILE_SIZE)] = null;
+		floor.itemsOnFloor.remove(potion);
+		
 		if(potion.classification == Potion.HEALTH_POTION){
 			setHealth(getHealth() + 50);
 			if (getHealth() > 100)
@@ -297,20 +304,24 @@ public class Player {
 	}
 	
 	public void pickUpItem(Item item, Floor floor){
-		if (itemsInInventory < 10){
-			for (int i = 0; inventorySpaces[i] != false; i++){
-				inventory[i] = item;
-			}
-		}
-		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = null;
-		floor.itemsOnFloor.remove(item);
+//		these are just commented out in case we implement an inventory display later
+		
+//		if (itemsInInventory < 10){
+//			for (int i = 0; inventorySpaces[i] != false; i++){
+//				inventory[i] = item;
+//			}
+//		}
+//		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = null;
+//		floor.itemsOnFloor.remove(item);
 	}
 	
 	//inventorySpace refers to the position in your inventory of the item being dropped i.e. the first item in your inventory is 0, next is 1, etc.
-	public void dropItem(Item item, Floor floor, int inventorySpace){
-		inventory[inventorySpace] = null;
-		inventorySpaces[inventorySpace] = false;
-		itemsInInventory--;
+	public void dropItem(Item item, Floor floor){
+//		these are just commented out in case we implement an inventory display later
+		
+//		inventory[inventorySpace] = null;
+//		inventorySpaces[inventorySpace] = false;
+//		itemsInInventory--;
 		if (item.isEquipped){
 			if (item instanceof Weapon)
 				equippedWeapon = null;
@@ -327,13 +338,25 @@ public class Player {
 		Random damageRng = new Random();
 		
 		if (equippedWeapon != null){
-			this.equippedWeapon.itemSprite.setPosition(this.x1, this.y2);
-			this.equippedWeapon.itemSprite.rotate(-45);
-			for (int i = 1; i <= 6; i++){
-				this.equippedWeapon.itemSprite.rotate(-15);
-				this.equippedWeapon.itemSprite.draw(batch);
+			this.equippedWeapon.itemSprite.setPosition(enemy.x1, enemy.y1);
+			if (this.directionFaced == "up" || this.directionFaced == "right"){
+				this.equippedWeapon.itemSprite.rotate(-45);
+				for (int i = 1; i <= 6; i++){
+					this.equippedWeapon.itemSprite.rotate(-15);
+					this.equippedWeapon.itemSprite.draw(batch);
+				}
+				this.equippedWeapon.itemSprite.rotate(135);
 			}
-			this.equippedWeapon.itemSprite.rotate(135);
+			else if (this.directionFaced == "down" || this.directionFaced == "left"){
+				this.equippedWeapon.itemSprite.flip(true, false);
+				this.equippedWeapon.itemSprite.rotate(45);
+				for (int i = 1; i <= 6; i++){
+					this.equippedWeapon.itemSprite.rotate(15);
+					this.equippedWeapon.itemSprite.draw(batch);
+				}
+				this.equippedWeapon.itemSprite.rotate(-135);
+				this.equippedWeapon.itemSprite.flip(true, false);
+			}
 		}
 		damageDealt = this.getAtk() + 3 - damageRng.nextInt(7) - enemy.getDef(); 
 		if (damageDealt < 0)

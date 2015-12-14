@@ -168,8 +168,13 @@ public class Game implements ApplicationListener {
     	//The E key should be interact (bring up options i.e. pick up item, view item stats, etc. , but this is for testing
     	if (Gdx.input.isKeyJustPressed(Keys.E)){
     		if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] != null){
-	    		player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE]);
-	    		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+    			if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Potion){
+    				player.usePotion((Potion) floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+    			}
+    			else{
+		    		player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+		    		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+    			}
     		}
     	}
 

@@ -34,6 +34,9 @@ public class Armor extends Item {
 			weight = 3;
 			itemSprite = new Sprite(new TextureRegion(heavyArmorSprites, itemRng.nextInt(3) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		}
+		
+		itemSprite.setPosition(coordinates[0], coordinates[1]);
+		floor.itemLocations[(int) (itemSprite.getX() / TILE_SIZE)][(int) (itemSprite.getY() / TILE_SIZE)] = this;
 	}
 	
 }
