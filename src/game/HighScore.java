@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,7 +32,7 @@ public class HighScore extends JPanel implements ActionListener {
 	private Container container;
 	private String name = "High Scores";
 	private JFrame highScores;
-	
+	private JScrollPane scrollPane;
 	public HighScore() throws Exception{
 		Font fontx = new Font("Serif", Font.BOLD | Font.ITALIC, 24);
 		ImageIcon newGame = new ImageIcon("src\\Assets\\Buttons\\NG1.png");
@@ -40,7 +41,7 @@ public class HighScore extends JPanel implements ActionListener {
 		ImageIcon quitGameRollover = new ImageIcon("src\\Assets\\Buttons\\Quit2.png");
 		highScores = new JFrame(name);
 		textScores = new JTextArea ("");
-		JScrollPane scrollPane = new JScrollPane(textScores);
+		scrollPane = new JScrollPane(textScores);
 		container = highScores.getContentPane();
 		
 		scrollPane.setBounds(70, 161, 500, 219);
@@ -48,7 +49,11 @@ public class HighScore extends JPanel implements ActionListener {
 		textScores.setOpaque(false);
 		textScores.setEditable(false);
 		textScores.setFont(fontx);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.getViewport().setOpaque(false);
 		scrollPane.setForeground(Color.white);
+		textScores.setForeground(Color.white);
+		
 		
 		playButton = new JButton(newGame);
 		playButton.setRolloverEnabled(true);
@@ -89,7 +94,7 @@ public class HighScore extends JPanel implements ActionListener {
 
 	    Statement m_Statement = m_Connection.createStatement();
 	    String query = "SELECT * FROM highscores";
-
+	    
 	    ResultSet m_ResultSet = m_Statement.executeQuery(query);
 	    while (m_ResultSet.next()) {
 	    	textScores.append("        " + m_ResultSet.getString(1) + "       .................................       " + m_ResultSet.getString(2)+System.lineSeparator());
