@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,9 +36,8 @@ public class Game implements ApplicationListener {
 	private Random rng = new Random();
 	public Connection connection;
 	public int floorLevel;
-	LwjglApplication window;
-	AudioPlayer MGP = AudioPlayer.player;
-    AudioStream BGM;
+	private AudioPlayer MGP = AudioPlayer.player;
+    private static AudioStream BGM;
     public static int score;
 	
     public void create () {
@@ -47,7 +48,6 @@ public class Game implements ApplicationListener {
         floor = new Floor(floorLevel);
         positionRng = rng.nextInt(floor.rooms.size() - 1);
         player = new Player(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY, floor.rooms.get(positionRng).centerX+TILE_SIZE, floor.rooms.get(positionRng).centerY+TILE_SIZE);
-        player.setGame(this);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         music();
@@ -67,6 +67,7 @@ public class Game implements ApplicationListener {
         floor.drawItems(batch);
         floor.drawEnemies(batch);
         player.drawPlayer(batch);
+        player.drawBars(batch);
         handleInput();
         batch.end();
     	
@@ -87,10 +88,6 @@ public class Game implements ApplicationListener {
     }
 
     public void dispose () {
-    }
-    
-    public void setWindow(LwjglApplication w){
-    	window = w;
     }
     
     public static void main(String[] args){
@@ -168,7 +165,7 @@ public class Game implements ApplicationListener {
 			}
     		processTurn();
 		}
-    	//The E key should be interact (bring up options i.e. pick up item, view item stats, etc. , but this is for testing
+    	
     	if (Gdx.input.isKeyJustPressed(Keys.E)){
     		if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] != null){
     			if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Potion){
@@ -180,6 +177,10 @@ public class Game implements ApplicationListener {
     			}
     		}
     		processTurn();
+    	}
+    	
+    	if (Gdx.input.isKeyJustPressed(Keys.A)){
+    		player.castFireball(player.directionFaced, floor, batch);
     	}
 
     }
@@ -203,18 +204,13 @@ public class Game implements ApplicationListener {
     }
     
    //this function just handles starting the music 
-   private void music() 
-    {       
-//        AudioPlayer MGP = AudioPlayer.player;
-//        AudioStream BGM;
-
+   private void music(){
         ContinuousAudioDataStream loop = null;
 
         try
         {
             BGM = new AudioStream(new FileInputStream("src/assets/magical_theme.wav"));
             AudioPlayer.player.start(BGM);
-            System.out.println("music started");
         }
         catch(FileNotFoundException e){
             e.printStackTrace();
@@ -227,11 +223,11 @@ public class Game implements ApplicationListener {
         
     }
    
-   	public void stopMusic(){
+   	//this function is used to stop the music when the player dies
+   	public static void stopMusic(){
    		try {
 			BGM.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
    	}
@@ -242,7 +238,6 @@ public class Game implements ApplicationListener {
     	for (int i = 0; i < floor.enemiesOnFloor.size(); i++){
     		floor.enemiesOnFloor.get(i).AI(player, floor, batch);
     	}
-    	
-    	
+  
     }
 }

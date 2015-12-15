@@ -8,6 +8,7 @@ import org.lwjgl.opengl.Display;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -46,18 +47,19 @@ public class Player {
 	public int equipmentWeight;
 	private Texture fireballTexture = new Texture("assets/fireball.png");
 	private TextureRegion[] fireballAnimation = new TextureRegion[4];
-	private Sprite fireballSprite;
+	public Sprite fireballSprite;
 	private Texture iceLanceTexture = new Texture("assets/icelance.png");
 	private TextureRegion[] iceLanceAnimation = new TextureRegion[4];
 	private Sprite iceLanceSprite;
 	public String directionFaced;
 	public boolean isDead;
-	public Game game;
-	BitmapFont damageFont = new BitmapFont();
-	BitmapFont regenFont = new BitmapFont();
-	CharSequence damageText;
-	CharSequence regenText;
-	
+	private BitmapFont damageFont = new BitmapFont();
+	private BitmapFont regenFont = new BitmapFont();
+	private CharSequence damageText;
+	private CharSequence regenText;
+	public Texture emptyBarTexture = new Texture ("assets/EmptyBar.png");
+	public Texture healthBarTexture = new Texture ("assets/RedBar.png");
+	public Texture manaBarTexture = new Texture ("assets/BlueBar.png");
 	
 	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
 	public Player(int x, int y, int X, int Y){
@@ -67,6 +69,7 @@ public class Player {
 		y2 = Y;
 		
 		setHealth(100);
+		setMana(100);
 		setAtk(15);
 		setDef(15);
 		directionFaced = "down";
@@ -88,7 +91,6 @@ public class Player {
 			character = new Sprite (charAnimation[0]);
 			character.setPosition(x1,y1); 
 			setUpSpells();
-			setMana(100);
 			equipmentWeight = 0;
 			itemsInInventory = 0;
 			for (int i = 0; i < 10; i++){
@@ -100,6 +102,13 @@ public class Player {
 	
 	public void drawPlayer(SpriteBatch batch){
 		character.draw(batch);
+	}
+	
+	public void drawBars(SpriteBatch batch){
+		batch.draw(emptyBarTexture, (float) this.x1 - 250, (float) this.y1 + 155, (float) (emptyBarTexture.getWidth() * .75), (float) (emptyBarTexture.getHeight() * .75), 0, 0, emptyBarTexture.getWidth(), emptyBarTexture.getHeight(), false, false);
+		batch.draw(healthBarTexture, (float) this.x1 - 250, (float) this.y1 + 155, (float) (healthBarTexture.getWidth() * .75 * this.getHealth() * .01), (float) (healthBarTexture.getHeight() * .75), 0, 0, (int) (this.getHealth() * .01 * healthBarTexture.getWidth()), healthBarTexture.getHeight(), false, false);
+		batch.draw(emptyBarTexture, (float) this.x1 + 95, (float) this.y1 + 155, (float) (emptyBarTexture.getWidth() * .75), (float) (emptyBarTexture.getHeight() * .75), 0, 0, emptyBarTexture.getWidth(), emptyBarTexture.getHeight(), false, false);
+		batch.draw(manaBarTexture, (float) this.x1 + 95, (float) this.y1 + 155, (float) (manaBarTexture.getWidth() * .75 * this.getMana() * .01), (float) (manaBarTexture.getHeight() * .75), 0, 0, (int) (this.getMana() * .01 * manaBarTexture.getWidth()), manaBarTexture.getHeight(), false, false);
 	}
 	
 	public void movePlayer(String direction, SpriteBatch batch, Floor floor){
@@ -331,10 +340,10 @@ public class Player {
 //		floor.itemsOnFloor.remove(item);
 	}
 	
-	//inventorySpace refers to the position in your inventory of the item being dropped i.e. the first item in your inventory is 0, next is 1, etc.
 	public void dropItem(Item item, Floor floor){
 //		these are just commented out in case we implement an inventory display later
 		
+//      inventorySpace refers to the position in your inventory of the item being dropped i.e. the first item in your inventory is 0, next is 1, etc.
 //		inventory[inventorySpace] = null;
 //		inventorySpaces[inventorySpace] = false;
 //		itemsInInventory--;
@@ -391,7 +400,7 @@ public class Player {
 		}
 		if (enemy.getHealth() <= 0){
 			if (enemy instanceof Enemy)
-				game.score += floor.floorLevel * 10 + 100;
+				Game.score += floor.floorLevel * 10 + 100;
 			enemy.die(floor);
 		}
 	}
@@ -400,21 +409,23 @@ public class Player {
 		if (this.getMana() >= 30){
 			fireballSprite = new Sprite(fireballAnimation[0]);
 			int animationRoll = 0;
+			Gdx.graphics.setContinuousRendering(true);
 			if (direction == "right"){
-				fireballSprite.rotate(270);
+				fireballSprite.rotate(90);
 				fireballSprite.setPosition(this.x2, this.y1);
 //				while (floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] == null)
-				while (floor.floorLayout[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] == 15){
-					fireballSprite.draw(batch);
+				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][this.y1 / TILE_SIZE] == FLOOR_TILE){
+					//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
 					fireballSprite.translateX(8);
+					fireballSprite.draw(batch);
 					if (animationRoll > 3)
 						animationRoll = 0;
 				}
-					
+			//Gdx.graphics.setContinuousRendering(false);		
 			}
 			else if (direction == "left"){
-				fireballSprite.rotate(90);
+				fireballSprite.rotate(270);
 				
 			}
 			else if (direction == "up"){
@@ -482,16 +493,12 @@ public class Player {
 		try {
 			new GameOver();
 			Display.destroy();
-			game.stopMusic();
+			Game.stopMusic();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-	}
-	
-	public void setGame(Game g){
-		game = g;
 	}
 	
 	public int getLvl(){

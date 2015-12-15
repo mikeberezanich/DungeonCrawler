@@ -64,7 +64,7 @@ public class TitleScreen extends JPanel implements ActionListener {
 		if(a == startButton){
 			Game game;
 			LwjglApplication window = new LwjglApplication(game = new Game(), "Wrath of the Ascendant", 1024, 768);
-			game.setWindow(window);
+			//game.setWindow(window);
 			this.menuScreen.dispose();
 		}
 		
