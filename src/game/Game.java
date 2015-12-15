@@ -181,6 +181,7 @@ public class Game implements ApplicationListener {
     	
     	if (Gdx.input.isKeyJustPressed(Keys.A)){
     		player.castFireball(player.directionFaced, floor, batch);
+    		Gdx.graphics.setContinuousRendering(false);
     	}
 
     }
