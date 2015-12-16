@@ -190,12 +190,15 @@ public class Game implements ApplicationListener {
     	//controls for casting spells
     	if (Gdx.input.isKeyJustPressed(Keys.A)){
     		player.castFireball(floor, batch);
+    		processTurn();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.S)){
     		player.castIceLance(floor, batch);
+    		processTurn();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.Q)){
     		player.castHealingTouch(batch);
+    		processTurn();
     	}
 
     	//this is to generate a new floor in case of a faulty floor being generated
