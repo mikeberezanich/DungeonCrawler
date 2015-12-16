@@ -45,6 +45,7 @@ public class Player {
 	public Item equippedWeapon;
 	public Item equippedArmor;
 	public int equipmentWeight;
+	Random damageRng = new Random();
 	private Texture fireballTexture = new Texture("assets/fireball.png");
 	private TextureRegion[] fireballAnimation = new TextureRegion[4];
 	public Sprite fireballSprite;
@@ -61,13 +62,14 @@ public class Player {
 	public Texture healthBarTexture = new Texture ("assets/RedBar.png");
 	public Texture manaBarTexture = new Texture ("assets/BlueBar.png");
 	
-	//lowercase x and y are x1 and y1 and capital X and Y are x2 and y2
+	//constructor for the player, it gets passed coordinates for the player 
 	public Player(int x, int y, int X, int Y){
 		x1 = x;
 		y1 = y;
 		x2 = X;
 		y2 = Y;
 		
+		//sets up players initial stats and a couple other things
 		setHealth(100);
 		setMana(100);
 		setAtk(15);
@@ -81,6 +83,7 @@ public class Player {
 			
 		}
 		else{
+			//this sets up the players sprite and animations
 			int k = 0;
 			for (int i = 0; i < 3; i++){
 				for (int j = 1; j < 4; j++){
@@ -92,18 +95,22 @@ public class Player {
 			character.setPosition(x1,y1); 
 			setUpSpells();
 			equipmentWeight = 0;
-			itemsInInventory = 0;
-			for (int i = 0; i < 10; i++){
-				inventorySpaces[i] = false;
-			}
+			
+//			in case an inventory system is later implemented
+//			itemsInInventory = 0; 
+//			for (int i = 0; i < 10; i++){
+//				inventorySpaces[i] = false;
+//			}
 		}
 		
 	}
 	
+	//draws the player
 	public void drawPlayer(SpriteBatch batch){
 		character.draw(batch);
 	}
 	
+	//draws the players health and mana bars at the top of the screen
 	public void drawBars(SpriteBatch batch){
 		batch.draw(emptyBarTexture, (float) this.x1 - 250, (float) this.y1 + 155, (float) (emptyBarTexture.getWidth() * .75), (float) (emptyBarTexture.getHeight() * .75), 0, 0, emptyBarTexture.getWidth(), emptyBarTexture.getHeight(), false, false);
 		batch.draw(healthBarTexture, (float) this.x1 - 250, (float) this.y1 + 155, (float) (healthBarTexture.getWidth() * .75 * this.getHealth() * .01), (float) (healthBarTexture.getHeight() * .75), 0, 0, (int) (this.getHealth() * .01 * healthBarTexture.getWidth()), healthBarTexture.getHeight(), false, false);
@@ -111,6 +118,7 @@ public class Player {
 		batch.draw(manaBarTexture, (float) this.x1 + 95, (float) this.y1 + 155, (float) (manaBarTexture.getWidth() * .75 * this.getMana() * .01), (float) (manaBarTexture.getHeight() * .75), 0, 0, (int) (this.getMana() * .01 * manaBarTexture.getWidth()), manaBarTexture.getHeight(), false, false);
 	}
 	
+	//handles player movement and animation
 	public void movePlayer(String direction, SpriteBatch batch, Floor floor){
 		if (direction == "up"){
 			
@@ -249,15 +257,13 @@ public class Player {
 		}
 	}
 	
-	public int getPositionTile(Floor floor){
-		return floor.floorLayout[(int) (character.getX()/TILE_SIZE)][(int) (character.getY()/TILE_SIZE)];
-	}
-	
+	//used when the player gets to a new floor, just resets the character sprite
 	public void moveToNewFloor(){
 		downFrame = 0;
 		character.setRegion(charAnimation[0]);
 	}
 	
+	//equips whatever item is passed
 	public void equipItem(Item item, Floor floor){
 		floor.itemLocations[(int) (item.itemSprite.getX() / TILE_SIZE)][(int) (item.itemSprite.getY() / TILE_SIZE)] = null;
 		floor.itemsOnFloor.remove(item);
@@ -288,8 +294,9 @@ public class Player {
 			item.isEquipped = true;
 			equipmentWeight += item.weight;
 		}
-		
 	}
+	
+	//unequips whatever item is currently equipped
 	public void unequipItem(Item item, Floor floor){
 		if (item.isEquipped){
 			if (item instanceof Weapon){
@@ -306,6 +313,7 @@ public class Player {
 		
 	}
 	
+	//uses a potion and applies its effect based on the type of the potion
 	public void usePotion(Potion potion, Floor floor, SpriteBatch batch){
 		floor.itemLocations[(int) (potion.itemSprite.getX() / TILE_SIZE)][(int) (potion.itemSprite.getY() / TILE_SIZE)] = null;
 		floor.itemsOnFloor.remove(potion);
@@ -328,6 +336,7 @@ public class Player {
 		regenFont.draw(batch, regenText, this.x1 + 8, this.y2 + 16);
 	}
 	
+	//picks up an item, won't be used unless an inventory system is implemented
 	public void pickUpItem(Item item, Floor floor){
 //		these are just commented out in case we implement an inventory display later
 		
@@ -340,6 +349,7 @@ public class Player {
 //		floor.itemsOnFloor.remove(item);
 	}
 	
+	//drops an item on floor
 	public void dropItem(Item item, Floor floor){
 //		these are just commented out in case we implement an inventory display later
 		
@@ -358,10 +368,10 @@ public class Player {
 		floor.itemsOnFloor.add(item);
 	}
 	
+	//used to atttack, and draw combat animations
 	public void attack(Player enemy, SpriteBatch batch, Floor floor){
 		
 		int damageDealt;
-		Random damageRng = new Random();
 		
 		if (equippedWeapon != null){
 			this.equippedWeapon.itemSprite.setPosition(enemy.x1, enemy.y1);
@@ -393,10 +403,6 @@ public class Player {
 		
 		if (enemy instanceof Enemy){
 			((Enemy) enemy).gotAttacked = true;
-			System.out.println("Enemy health " + enemy.getHealth());
-		}
-		else{
-			System.out.println("Player health " + enemy.getHealth());
 		}
 		if (enemy.getHealth() <= 0){
 			if (enemy instanceof Enemy)
@@ -405,16 +411,17 @@ public class Player {
 		}
 	}
 	
-	public void castFireball(String direction, Floor floor, SpriteBatch batch){
+	//casts fireball, draws flames to the screen and damages the first enemy it hits for 40 damage
+	public void castFireball(Floor floor, SpriteBatch batch){
 		if (this.getMana() >= 30){
 			fireballSprite = new Sprite(fireballAnimation[0]);
 			int animationRoll = 0;
 //			Gdx.graphics.setContinuousRendering(true);
-			if (direction == "right"){
+			if (directionFaced == "right"){
 				fireballSprite.rotate(90);
-				fireballSprite.setPosition(this.x2, this.y1);
+				fireballSprite.setPosition(this.x1, this.y1);
 //				while (floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] == null)
-				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][this.y1 / TILE_SIZE] == FLOOR_TILE){
+				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][this.y1 / TILE_SIZE] == FLOOR_TILE && !(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] instanceof Enemy)){
 					//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
 					fireballSprite.translateX(8);
@@ -422,41 +429,86 @@ public class Player {
 					if (animationRoll > 3)
 						animationRoll = 0;
 				}
+				
 			//Gdx.graphics.setContinuousRendering(false);		
 			}
-			else if (direction == "left"){
+			else if (directionFaced == "left"){
 				fireballSprite.rotate(270);
 				
 			}
-			else if (direction == "up"){
+			else if (directionFaced == "up"){
 				fireballSprite.rotate(180);
 				
 			}
-			else if (direction == "down"){
+			else if (directionFaced == "down"){
 				
+			}
+			
+			if (floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] instanceof Enemy){
+				floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)].setHealth(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE].getHealth() - 40);
+				((Enemy) floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)]).gotAttacked = true;
+				damageText = "-40";
+				damageFont.draw(batch, damageText, fireballSprite.getX() + 8, fireballSprite.getY() + 42);
 			}
 			
 			this.setMana(this.getMana() - 30);
 		}
 	}
 	
-	public void castIceLance(){
+	//casts ice lance, draws ice beam to the screen and damages the first enemy it hits for 20 damage with a chance to slow them
+	public void castIceLance(Floor floor, SpriteBatch batch){
 		if (this.getMana() >= 30){
+			iceLanceSprite = new Sprite(iceLanceAnimation[0]);
+			int animationRoll = 0;
+			//Add animations here
+			if (directionFaced == "right"){
+				
+			}
+			else if (directionFaced == "left"){
+				
+			}
+			else if (directionFaced == "up"){
+				
+			}
+			else if (directionFaced == "down"){
+				
+			}
 			
+			
+			iceLanceSprite.setPosition(this.x1, this.y1);
+			if (floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] instanceof Enemy){
+				floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)].setHealth(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE].getHealth() - 20);
+				((Enemy) floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)]).gotAttacked = true;
+				damageText = "-20";
+				damageFont.draw(batch, damageText, iceLanceSprite.getX() + 8, iceLanceSprite.getY() + 42);
+				if (damageRng.nextInt(10) < 3){
+					((Enemy) floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE]).isSlowed = true;
+					((Enemy) floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE]).slowTurn = true;
+					damageText = "Slowed";
+					damageFont.setColor(Color.GREEN);
+					damageFont.draw(batch, damageText, iceLanceSprite.getX() + 8, iceLanceSprite.getY() + 60);
+					damageFont.setColor(Color.RED);
+				}
+			}
 			
 			this.setMana(this.getMana() - 30);
 		}
 	}
 	
-	public void castHealingTouch(){
+	//casts healing touch on the player, healing 30 HP
+	public void castHealingTouch(SpriteBatch batch){
 		if (this.getMana() >= 30){
-			this.setHealth(this.getHealth() + 50);
+			this.setHealth(this.getHealth() + 30);
 			if (this.getHealth() > 100)
 				this.setHealth(100);
 			this.setMana(this.getMana() - 30);
+			regenFont.setColor(Color.GREEN);
+			regenText = "+30";
+			regenFont.draw(batch, regenText, this.x1 + 4, this.y2 + 16);
 		}
 	}
 	
+	//sets up the TextureRegions for spell animations
 	private void setUpSpells(){
 		for(int i = 0; i < 4; i++){
 			fireballAnimation[i] = new TextureRegion(fireballTexture, i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
@@ -464,6 +516,7 @@ public class Player {
 		}
 	}
 	
+	//changes the direction the player is facing if next to an enemy and hits an arrow key
 	public void changeDirection(String direction){
 		if (direction == "left"){
 			directionFaced = "left";
@@ -484,23 +537,22 @@ public class Player {
 		}
 	}
 	
+	//called when the players HP drops to 0 or below, brings up a game over screen and asks the player to enter intitials for the high score table
 	public void die(Floor floor){
 		
 		isDead = true;
-		//code to bring up death screen, maybe a death animation
 		
-		//need to pass the score to this eventually
 		try {
 			new GameOver();
 			Display.destroy();
 			Game.stopMusic();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
+	//these are setters and getters for the players stats
 	public int getLvl(){
 		return lvl;
 	}

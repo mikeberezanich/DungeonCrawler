@@ -6,7 +6,7 @@
 <ul>
 <li>Create menus</li>
 <li>Create interaction between player and objects</li>
-<li>Add spells</li>
+<li>Animate spells</li>
 <li>Add stones/orbs </li>
 </ul>
 <br>Bugs:

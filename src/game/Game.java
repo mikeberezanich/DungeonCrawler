@@ -48,13 +48,13 @@ public class Game implements ApplicationListener {
         floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
         moveCamera();
         Gdx.graphics.setContinuousRendering(false);
+        
     }
 
     public void render () {
 
-//    	handleInput();
     	camera.update();
-    	batch.setProjectionMatrix(camera.combined); //comment this line out for testing
+    	batch.setProjectionMatrix(camera.combined);
     	batch.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         floor.drawFloor(batch);
@@ -89,6 +89,8 @@ public class Game implements ApplicationListener {
     }
     
     private void handleInput() {
+    	
+    	//controls for movement
     	if (Gdx.input.isKeyJustPressed(Keys.UP)){
     		if (floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE + 1] instanceof Enemy){
     			player.changeDirection("up");
@@ -133,7 +135,21 @@ public class Game implements ApplicationListener {
 	    		checkForStairs();
     		}
     	}
-    	if (Gdx.input.isKeyJustPressed(Keys.Q)){
+    	if (Gdx.input.isKeyJustPressed(Keys.R)){
+    		processTurn();
+    	}
+    	
+    	//controls for item interaction
+    	if (Gdx.input.isKeyJustPressed(Keys.E)){
+    		if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] != null){
+    			if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Potion){
+    				player.usePotion((Potion) floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor, batch);
+    			}
+    			else{
+		    		player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+		    		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
+    			}
+    		}
     		processTurn();
     	}
     	if (Gdx.input.isKeyJustPressed(Keys.W)){
@@ -145,6 +161,8 @@ public class Game implements ApplicationListener {
     			}
     		}
     	}
+    	
+    	//controls for attacking
     	if (Gdx.input.isKeyJustPressed(Keys.D)){
     		if (player.directionFaced == "right"){
     			if (floor.characterLocations[player.x1 / TILE_SIZE + 1][player.y1 / TILE_SIZE] != null){
@@ -169,29 +187,55 @@ public class Game implements ApplicationListener {
     		processTurn();
 		}
     	
-    	if (Gdx.input.isKeyJustPressed(Keys.E)){
-    		if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] != null){
-    			if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Potion){
-    				player.usePotion((Potion) floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor, batch);
-    			}
-    			else{
-		    		player.equipItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
-		    		player.pickUpItem(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE], floor);
-    			}
-    		}
-    		processTurn();
-    	}
-    	
+    	//controls for casting spells
     	if (Gdx.input.isKeyJustPressed(Keys.A)){
-    		player.castFireball(player.directionFaced, floor, batch);
+    		player.castFireball(floor, batch);
+    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.S)){
+    		player.castIceLance(floor, batch);
+    	}
+    	if (Gdx.input.isKeyJustPressed(Keys.Q)){
+    		player.castHealingTouch(batch);
     	}
 
+    	//this is to generate a new floor in case of a faulty floor being generated
+    	//will be removed in future but this is a temporary solution
+    	//won't work if enemy is nearby to prevent abuse
+    	if (Gdx.input.isKeyJustPressed(Keys.P)){
+    		
+    		boolean enemyNearby = false;
+    		
+    		//this loop checks for nearby enemies
+    		for (int i = 0; i < 3; i++){
+    			for (int j = 0; j < 3; j++){
+    				if ((player.x1 / TILE_SIZE + i < 32 && player.y1 / TILE_SIZE + j < 24 && floor.characterLocations[player.x1 / TILE_SIZE + i][player.y1 / TILE_SIZE + j] instanceof Enemy) ||
+    						(player.x1 / TILE_SIZE + i < 32 && player.y1 / TILE_SIZE - j >= 0 && floor.characterLocations[player.x1 / TILE_SIZE + i][player.y1 / TILE_SIZE - j] instanceof Enemy) ||
+    						(player.x1 / TILE_SIZE - i >= 0 && player.y1 / TILE_SIZE + j < 24 && floor.characterLocations[player.x1 / TILE_SIZE - i][player.y1 / TILE_SIZE + j] instanceof Enemy) || 
+    						(player.x1 / TILE_SIZE - i >= 0 && player.y1 / TILE_SIZE - j >= 0 && floor.characterLocations[player.x1 / TILE_SIZE - i][player.y1 / TILE_SIZE - j] instanceof Enemy)){
+    					enemyNearby = true;
+    				}
+    			}
+    		}
+    		
+    		//generates new floor but doesn't boost score or increase floor level
+    		if (!enemyNearby){
+    			floor = new Floor(floorLevel);
+        		positionRng = rng.nextInt(floor.rooms.size() - 1);
+        		player.character.setPosition(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY);
+        		player.x1 = (int) player.character.getX();
+        		player.x2 = (int) player.character.getX() + TILE_SIZE;
+        		player.y1 = (int) player.character.getY();
+        		player.y2 = (int) player.character.getY() + TILE_SIZE;
+        		player.moveToNewFloor();
+        		floor.characterLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] = player;
+        		moveCamera();
+    		}
+    	}
     }
     
     //checks if the stairs are underneath the player
-    //should update this to ask for confirmation of whether to move a new floor or not
     private void checkForStairs() {
-    	if (player.getPositionTile(floor) == 30){
+    	if (floor.floorLayout[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] == 30){
     		floor = new Floor(++floorLevel);
     		positionRng = rng.nextInt(floor.rooms.size() - 1);
     		player.character.setPosition(floor.rooms.get(positionRng).centerX, floor.rooms.get(positionRng).centerY);

@@ -12,20 +12,23 @@ public class Enemy extends Player{
 
 	public boolean gotAttacked;
 	private Random movementRng = new Random();
-	private Texture enemySpritesheet = new Texture("assets/zombies2.png");
+	private Texture enemySpritesheet = new Texture("assets/zombie.png");
 	private TextureRegion zombieSprites = new TextureRegion(enemySpritesheet, 0, 0, 3 * TILE_SIZE, 192);
-//	private TextureRegion skeletonSprites = new TextureRegion(enemySpritesheet, 3 * TILE_SIZE, 0, 6 * TILE_SIZE, 256);
 	private TextureRegion[] enemyAnimation = new TextureRegion[12];
 	public static int LEFT = 0;
 	public static int RIGHT = 1;
 	public static int UP = 2;
 	public static int DOWN = 3;
+	public boolean isSlowed = false;
+	public boolean slowTurn = false;
 	
+	//contstructor for enemies, takes coordinates and the floor it's on so it can generate stats based on this
 	public Enemy(int x, int y, int X, int Y, Floor floor) {
 		super(x, y, X, Y);
-		setAtk((int)(20 + floor.floorLevel * 1.5));           //replace these 5's with some floorLevel based stats
+		setAtk((int)(20 + floor.floorLevel * 1.5));
 		setDef((int)(5 + floor.floorLevel * 1.5));
 		
+		//sets up the enemy's sprites/animations
 		int k = 0;
 		for (int i = 0; i < 4; i++){
 			for (int j = 0; j < 3; j++){
@@ -40,19 +43,13 @@ public class Enemy extends Player{
 		floor.characterLocations[x1 / TILE_SIZE][y1 / TILE_SIZE] = this;
 	}
 	
+	//enemy's AI, decides move based on conditions
 	public void AI(Player player, Floor floor, SpriteBatch batch){
 		
-		if (gotAttacked){
-			if (isAdjacentToPlayer(floor, player)){
-				facePlayer(player, floor);
-				attack(player, batch, floor);
-			}
-			else{
-				moveTowardsPlayer(player, floor);
-			}
-		}
-		else{
-			if(checkForPlayer(player, floor)){
+		//first checks if it's a slowed down turn
+		if (!slowTurn){
+			//if the enemy got attacked, attack the player if adjacent or walk towards them if not
+			if (gotAttacked){
 				if (isAdjacentToPlayer(floor, player)){
 					facePlayer(player, floor);
 					attack(player, batch, floor);
@@ -61,13 +58,38 @@ public class Enemy extends Player{
 					moveTowardsPlayer(player, floor);
 				}
 			}
+			//if didn't get attacked, check surrounding tiles for player
 			else{
-				moveRandomly(floor);
+				//checks if within range, based on the players equipment weight
+				if(checkForPlayer(player, floor)){
+					//if adjacent to player, face and attack them
+					if (isAdjacentToPlayer(floor, player)){
+						facePlayer(player, floor);
+						attack(player, batch, floor);
+					}
+					//if not adjacent but still nearby, move towards the player
+					else{
+						moveTowardsPlayer(player, floor);
+					}
+				}
+				//if the player is not nearby, just move a random direction
+				else{
+					moveRandomly(floor);
+				}
 			}
+		}
+		
+		//If the enemy has been slowed, alternate between getting to move next turn or not
+		if (isSlowed){
+			if (slowTurn)
+				slowTurn = false;
+			else
+				slowTurn = true;
 		}
 		
 	}
 	
+	//checks if the player is adjacent to this enemy
 	public boolean isAdjacentToPlayer(Floor floor, Player player){
 		
 		boolean isAdjacent;
@@ -86,13 +108,18 @@ public class Enemy extends Player{
 		return isAdjacent;
 	}
 	
+	//function to move the enemy randomly
 	public void moveRandomly(Floor floor){
 		
 		boolean canMove = false;
 		int direction;
 		
+		//while the move randomly selected cannot be performed due to another character or wall being in the way
 		while (!canMove){
+			//pick a random direction
 			direction = movementRng.nextInt(4);
+			
+			//handles whether or not the character can move the direction selected, and if they can, handles the movement and animation
 			switch(direction){
 			case 0: if ((floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE ||
 					floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == STAIR_TILE) && 
@@ -219,11 +246,13 @@ public class Enemy extends Player{
 		}
 	}
 	
+	//function to move the enemy towards the player
 	public void moveTowardsPlayer(Player player, Floor floor){
 		int[] directionsToMove = new int[4];
 		int i = 0;
 		boolean canMove = false;
 		
+		//finds all the directions that would help the enemy get closer to the player
 		if (player.x1 < this.x1){
 			directionsToMove[i++] = LEFT;
 		}
@@ -237,6 +266,8 @@ public class Enemy extends Player{
 			directionsToMove[i++] = DOWN;
 		}
 		
+		//goes through all the directions that would help the enemy get closer to the player and picks one based on if it can move that way
+		//then it handles the movement and animation based on the first succesful move
 		for (int j = 0; j <= i && !canMove; j++){
 			switch(directionsToMove[j]){
 			case 0: if ((floor.floorLayout[x1/TILE_SIZE - 1][y1/TILE_SIZE] == FLOOR_TILE ||
@@ -365,10 +396,12 @@ public class Enemy extends Player{
 		}
 	}
 	
+	//checks surroundings for player based on the player's current equipment weight
 	public boolean checkForPlayer(Player player, Floor floor){
 		
 		int distance;
 		
+		//the number of tiles checked depends on the players equipment weight
 		switch(player.equipmentWeight){
 			case 0:
 			case 1:
@@ -383,6 +416,7 @@ public class Enemy extends Player{
 		}
 		
 		//the && conditions are to avoid going out of bounds of the array
+		//checks the number of tiles in each of 8 directions, and a couple spots inbetween
 		for (int i = 0; i < distance; i++){
 			if ((this.x1 / TILE_SIZE + i < 32 && floor.characterLocations[this.x1 / TILE_SIZE + i][this.y1 / TILE_SIZE] == player) ||
 				(this.x1 / TILE_SIZE - i >= 0 && floor.characterLocations[this.x1 / TILE_SIZE - i][this.y1 / TILE_SIZE] == player) ||
@@ -407,6 +441,7 @@ public class Enemy extends Player{
 		return false;
 	}
 	
+	//used to make the enemy face the player during combat
 	public void facePlayer(Player player, Floor floor){
 		if(floor.characterLocations[this.x1 / TILE_SIZE - 1][this.y1 / TILE_SIZE] == player){
 			this.character.setRegion(enemyAnimation[4]);
@@ -422,6 +457,7 @@ public class Enemy extends Player{
 		}
 	}
 	
+	//when enemy's health reaches 0 or below, removes them from the screen and from the list of enemies on the floor
 	public void die(Floor floor){
 		
 		floor.characterLocations[this.x1 / TILE_SIZE][this.y1 / TILE_SIZE] = null;

@@ -17,6 +17,7 @@ public class Item {
 	protected Texture itemSpritesheet = new Texture("assets/items.png");
 	public static int TILE_SIZE = 32;
 	
+	//an item class was ideal for grouping weapons, armor, and potions together
 	public Item(){
 		isEquipped = false;
 	}

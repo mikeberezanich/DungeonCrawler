@@ -1,0 +1,8 @@
+Arroy Keys - Move character
+R - Skip move
+E - Pick up item
+W - Check item's strength
+Q - Cast Healing Touch (Costs 30 mana, heals 30 HP)
+A - Cast Fireball (Costs 30 mana, deals 40 damage)
+S - Cast Ice Lance (Costs 30 mana, deals 20 damage, 30% chance to freeze)
+D - Attack

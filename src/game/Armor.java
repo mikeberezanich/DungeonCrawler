@@ -17,20 +17,21 @@ public class Armor extends Item {
 	public Armor(Floor floor, int[] coordinates){
 		super();
 
+		//randomly picks which class of armor it will be
 		classification = itemRng.nextInt(3);
 		
 		if (classification == LIGHT_ARMOR){
-			strength = itemRng.nextInt(floor.floorLevel + 1) + 3; //Fix this up later
+			strength = itemRng.nextInt(floor.floorLevel + 2) + 2; //Fix this up later
 			weight = 1;
 			itemSprite = new Sprite(new TextureRegion(lightArmorSprites, itemRng.nextInt(3) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		}
 		else if (classification == MEDIUM_ARMOR){
-			strength = itemRng.nextInt(floor.floorLevel + 1) + 5; //Fix this up later
+			strength = itemRng.nextInt(floor.floorLevel + 2) + 4; //Fix this up later
 			weight = 2;
 			itemSprite = new Sprite(new TextureRegion(mediumArmorSprites, itemRng.nextInt(3) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		}
 		else if (classification == HEAVY_ARMOR){
-			strength = itemRng.nextInt(floor.floorLevel + 1) + 7; //Fix this up later
+			strength = itemRng.nextInt(floor.floorLevel + 2) + 6; //Fix this up later
 			weight = 3;
 			itemSprite = new Sprite(new TextureRegion(heavyArmorSprites, itemRng.nextInt(3) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		}

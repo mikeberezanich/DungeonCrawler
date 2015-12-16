@@ -15,6 +15,7 @@ public class Weapon extends Item {
 	public Weapon(Floor floor, int[] coordinates) {
 		super();
 		
+		//randomly picks which class of weapon it will be
 		classification = itemRng.nextInt(3);
 		
 		if (classification == SWORD_CLASS){

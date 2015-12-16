@@ -309,7 +309,8 @@ public class Floor{
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
 				
-				//don't even bother trying to make sense of these, these are just all the different situations being accounted for
+				//these are just trying to account for the different situations that can occur when randomly generating floors
+				//makes sure that the correct tiles are being placed for each situation
 				if (floorLayout[i][j] == BOTH_CORR_TILE){
 					if (floorLayout[i][j+1] == EMPTY_TILE)
 						floorLayout[i][j+1] = rng.nextInt(7);
@@ -322,13 +323,13 @@ public class Floor{
 					if (floorLayout[i][j-1] == 11)
 						floorLayout[i][j-1] = 8;
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j+1] < 7)
-						floorLayout[i+1][j+1] = 11; //this doesn't seem to work for some reason
+						floorLayout[i+1][j+1] = 11;
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j-1] == 8 && floorLayout[i+1][j-1] != 11)
-						floorLayout[i+1][j+1] = 14; //this doesn't seem to work for some reason
+						floorLayout[i+1][j+1] = 14; 
 					if (floorLayout[i+1][j] == 11 && floorLayout[i][j-1] < 7 && floorLayout[i+1][j-1] != 11)
 						floorLayout[i+1][j-1] = 14;
 					if (floorLayout[i-1][j] == 10 && floorLayout[i][j-1] < 8)
-						floorLayout[i-1][j-1] = 13; //this doesn't seem to work for some reason
+						floorLayout[i-1][j-1] = 13;
 					if (floorLayout[i][j-1] == 10)
 						floorLayout[i][j-1] = 7;
 					if (floorLayout[i-1][j-1] < 7 && floorLayout[i-1][j-2] == 10)
@@ -379,8 +380,6 @@ public class Floor{
 						floorLayout[i+1][j-1] = 8;
 					if (floorLayout[i-1][j-1] == 8 && floorLayout[i-1][j-2] == 12)
 						floorLayout[i-1][j-1] = 9;
-//					if (floorLayout[i+1][j+1] < 7 && floorLayout[i-1][j+1] < 7)
-//						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 10 && floorLayout[i-1][j+1] < 7)
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] < 7 && floorLayout[i+1][j] == 11 && floorLayout[i+1][j+1] == EMPTY_TILE)
@@ -396,7 +395,7 @@ public class Floor{
 						floorLayout[i+1][j] = 11;
 					if (floorLayout[i-1][j] == 11)
 						floorLayout[i-1][j] = 12;
-					if (floorLayout[i+1][j] == 10) //This may be wrong?
+					if (floorLayout[i+1][j] == 10)
 						if (floorLayout[i+1][j+1] == FLOOR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_TILE || floorLayout[i+1][j+1] == HORIZ_CORR_LEFT_DOOR_TILE)
 							floorLayout[i+1][j] = rng.nextInt(7);
 						else
@@ -468,8 +467,6 @@ public class Floor{
 						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j+1] == 14)
 						floorLayout[i][j+1] = rng.nextInt(7);
-//					if (floorLayout[i][j+1] == 8)
-//						floorLayout[i][j+1] = rng.nextInt(7);
 					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] == 11)
 						floorLayout[i][j-1] = 8;
 					if (floorLayout[i][j-1] < 7 && floorLayout[i][j-2] == 14)
@@ -527,24 +524,24 @@ public class Floor{
 			}
 		}
 		
-		//these next couple lines are just to print the floor array for debugging purposes
-		for (int i = 0; i < 24; i++){
-			System.out.print(i + " ");
-			if (i < 10)
-				System.out.print(" ");
-		}
-		System.out.println("");
-		for (int i = 0; i < 32; i++){
-			for (int j = 0; j < 24; j++){
-				System.out.print(floorLayout[i][j]);
-				System.out.print(" ");
-				if (floorLayout[i][j] < 10)
-					System.out.print(" ");
-			}
-			System.out.print(" <- " + i);
-			System.out.println();}
+		//these next commented out lines are just to print the floor array for debugging purposes
+//		for (int i = 0; i < 24; i++){
+//			System.out.print(i + " ");
+//			if (i < 10)
+//				System.out.print(" ");
+//		}
+//		System.out.println("");
+//		for (int i = 0; i < 32; i++){
+//			for (int j = 0; j < 24; j++){
+//				System.out.print(floorLayout[i][j]);
+//				System.out.print(" ");
+//				if (floorLayout[i][j] < 10)
+//					System.out.print(" ");
+//			}
+//			System.out.print(" <- " + i);
+//			System.out.println();}
 		
-		//this changes all the corridor tiles in the array to floor tiles to allow the character to walk on them
+		//this changes all the corridor tiles in the array to plain floor tiles to allow the character to walk on them
 		for (int i = 0; i < 32; i++){
 			for (int j = 0; j < 24; j++){
 				if (floorLayout[i][j] >= VERT_CORR_TILE && floorLayout[i][j] < 27)
@@ -641,7 +638,7 @@ public class Floor{
 		}
 	}
 	
-	//can be used for finding open space to place items at, returns array of [x-coordinate, y-coordinate]
+	//used for finding open space to place items/enemies at, returns array of [x-coordinate, y-coordinate]
 	public int[] findOpenSpace(){
 		int i = rng.nextInt(32);
 		int j = rng.nextInt(24);
@@ -654,6 +651,7 @@ public class Floor{
 		return new int[] {i * TILE_SIZE, j * TILE_SIZE};
 	}
 	
+	//places items on the floor
 	public void placeItems(){
 		int itemRng;
 		Item item;
@@ -674,12 +672,14 @@ public class Floor{
 		}
 	}
 	
+	//used to draw each item on the floor
 	public void drawItems(SpriteBatch batch){
 		for (int i = 0; i < itemsOnFloor.size(); i++){
 			itemsOnFloor.get(i).itemSprite.draw(batch);
 		}
 	}
 	
+	//places enemies on the floor
 	public void placeEnemies(){
 		for (int i = 0; i < numEnemiesOnFloor; i++){
 			int[] coordinates = findOpenSpace();
@@ -688,12 +688,14 @@ public class Floor{
 		}
 	}
 	
+	//used to draw each enemy on the floor
 	public void drawEnemies(SpriteBatch batch){
 		for (int i = 0; i < enemiesOnFloor.size(); i++){
 			enemiesOnFloor.get(i).character.draw(batch);
 		}
 	}
 	
+	//places stairs on the floor in a random corner of a random room
 	public void placeStairs(){
 		roomRng = rng.nextInt(this.rooms.size());
 		cornerRng = rng.nextInt(4);

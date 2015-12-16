@@ -1,23 +1,4 @@
-Wall Texture Set - Inanzen http://opengameart.org/
-Panda Character Texture Set - @danielmahon
-Medieval Characters Texture Set - wulax
-Treasure Box Texture - Blarumyrran
-Knight Texture Set - thomaswp
-Gui Elements - yd
-Bosses Spritesheet - Balmer http://opengameart.org/
-Prepare Your Swords Song - Bojidar Marinov
-Magical Theme Song - remaxim
-DO Items - David E. Gervais
-Dungeon Crawl Project Utumno Tileset - RLTiles http://rltiles.sf.net
-Items - rcorre https://github.com/rcorre
-Red, Blue, Empty Bars - lancel
-HUD Pieces - Buch http://opengameart.org/users/buch
-Zombie n Skeleton 2 - Reemax / Artisticdude
-Snowman Set - Nexust
-Demon Assassin - Xenocity
-Enemy Sprites - Division PLUS
-
-Ones Used So Far
+Acknowledgements/Credits
 ----------------
 Wall Texture Set - Inanzen http://opengameart.org/
 Panda Character Texture Set - @danielmahon
@@ -25,3 +6,4 @@ Magical Theme Song - remaxim
 Items - rcorre https://github.com/rcorre
 Zombie n Skeleton 2 - Reemax / Artisticdude
 DO Items - David E. Gervais
+Red, Blue, Empty Bars - lancel
