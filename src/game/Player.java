@@ -409,7 +409,7 @@ public class Player {
 		if (this.getMana() >= 30){
 			fireballSprite = new Sprite(fireballAnimation[0]);
 			int animationRoll = 0;
-			Gdx.graphics.setContinuousRendering(true);
+//			Gdx.graphics.setContinuousRendering(true);
 			if (direction == "right"){
 				fireballSprite.rotate(90);
 				fireballSprite.setPosition(this.x2, this.y1);

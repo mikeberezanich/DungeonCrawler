@@ -1,24 +1,16 @@
 package game;
 
-import java.awt.AWTException;
-import java.awt.Robot;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Random;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -39,6 +31,8 @@ public class Game implements ApplicationListener {
 	private AudioPlayer MGP = AudioPlayer.player;
     private static AudioStream BGM;
     public static int score;
+    private BitmapFont itemStrengthFont;
+	private CharSequence itemStrengthText;
 	
     public void create () {
 
@@ -142,6 +136,15 @@ public class Game implements ApplicationListener {
     	if (Gdx.input.isKeyJustPressed(Keys.Q)){
     		processTurn();
     	}
+    	if (Gdx.input.isKeyJustPressed(Keys.W)){
+    		if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] != null){
+    			if (floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Weapon || floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE] instanceof Armor){
+    				itemStrengthFont = new BitmapFont();
+    				itemStrengthText = Integer.toString(floor.itemLocations[player.x1 / TILE_SIZE][player.y1 / TILE_SIZE].strength);
+    				itemStrengthFont.draw(batch, itemStrengthText, player.x1 + 8, player.y2 + 16);
+    			}
+    		}
+    	}
     	if (Gdx.input.isKeyJustPressed(Keys.D)){
     		if (player.directionFaced == "right"){
     			if (floor.characterLocations[player.x1 / TILE_SIZE + 1][player.y1 / TILE_SIZE] != null){
@@ -181,7 +184,6 @@ public class Game implements ApplicationListener {
     	
     	if (Gdx.input.isKeyJustPressed(Keys.A)){
     		player.castFireball(player.directionFaced, floor, batch);
-    		Gdx.graphics.setContinuousRendering(false);
     	}
 
     }

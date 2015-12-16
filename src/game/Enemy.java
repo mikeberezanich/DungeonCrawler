@@ -23,8 +23,8 @@ public class Enemy extends Player{
 	
 	public Enemy(int x, int y, int X, int Y, Floor floor) {
 		super(x, y, X, Y);
-		setAtk(20);           //replace these 5's with some floorLevel based stats
-		setDef(5);
+		setAtk((int)(20 + floor.floorLevel * 1.5));           //replace these 5's with some floorLevel based stats
+		setDef((int)(5 + floor.floorLevel * 1.5));
 		
 		int k = 0;
 		for (int i = 0; i < 4; i++){
