@@ -416,13 +416,14 @@ public class Player {
 		if (this.getMana() >= 30){
 			fireballSprite = new Sprite(fireballAnimation[0]);
 			int animationRoll = 0;
+			
 //			Gdx.graphics.setContinuousRendering(true);
 			if (directionFaced == "right"){
-				fireballSprite.rotate(90);
 				fireballSprite.setPosition(this.x1, this.y1);
-//				while (floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] == null)
-				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][this.y1 / TILE_SIZE] == FLOOR_TILE && !(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE] instanceof Enemy)){
-					//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				fireballSprite.rotate(90);
+//				
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] instanceof Enemy)){
 					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
 					fireballSprite.translateX(8);
 					fireballSprite.draw(batch);
@@ -433,19 +434,45 @@ public class Player {
 			//Gdx.graphics.setContinuousRendering(false);		
 			}
 			else if (directionFaced == "left"){
+				fireballSprite.setPosition(this.x1, this.y1);
 				fireballSprite.rotate(270);
 				
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
+					fireballSprite.translateX(-8);
+					fireballSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
 			else if (directionFaced == "up"){
+				fireballSprite.setPosition(this.x1, this.y1);
 				fireballSprite.rotate(180);
 				
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
+					fireballSprite.translateY(8);
+					fireballSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
 			else if (directionFaced == "down"){
-				
+				fireballSprite.setPosition(this.x1, this.y1);
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((fireballSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					fireballSprite.setRegion(fireballAnimation[animationRoll++]);
+					fireballSprite.translateY(-8);
+					fireballSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
 			
 			if (floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)] instanceof Enemy){
-				floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)].setHealth(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE].getHealth() - 40);
+				floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)].setHealth(floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)].getHealth() - 40);
 				((Enemy) floor.characterLocations[(int) (fireballSprite.getX() / TILE_SIZE)][(int) (fireballSprite.getY() / TILE_SIZE)]).gotAttacked = true;
 				damageText = "-40";
 				damageFont.draw(batch, damageText, fireballSprite.getX() + 8, fireballSprite.getY() + 42);
@@ -460,24 +487,60 @@ public class Player {
 		if (this.getMana() >= 30){
 			iceLanceSprite = new Sprite(iceLanceAnimation[0]);
 			int animationRoll = 0;
-			//Add animations here
+			
 			if (directionFaced == "right"){
+				iceLanceSprite.setPosition(this.x1, this.y1);
+				iceLanceSprite.rotate(90);
 				
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((iceLanceSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					iceLanceSprite.setRegion(iceLanceAnimation[animationRoll++]);
+					iceLanceSprite.translateX(8);
+					iceLanceSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
 			else if (directionFaced == "left"){
+				iceLanceSprite.setPosition(this.x1, this.y1);
+				iceLanceSprite.rotate(270);
 				
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((iceLanceSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					iceLanceSprite.setRegion(iceLanceAnimation[animationRoll++]);
+					iceLanceSprite.translateX(-8);
+					iceLanceSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
 			else if (directionFaced == "up"){
+				iceLanceSprite.setPosition(this.x1, this.y1);
+				iceLanceSprite.rotate(180);
 				
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((iceLanceSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					iceLanceSprite.setRegion(iceLanceAnimation[animationRoll++]);
+					iceLanceSprite.translateY(8);
+					iceLanceSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
 			else if (directionFaced == "down"){
-				
+				iceLanceSprite.setPosition(this.x1, this.y1);
+				//draw until it hits a wall or enemy
+				while (floor.floorLayout[(int) ((iceLanceSprite.getX() + TILE_SIZE) / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] == FLOOR_TILE && !(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] instanceof Enemy)){
+					iceLanceSprite.setRegion(iceLanceAnimation[animationRoll++]);
+					iceLanceSprite.translateY(-8);
+					iceLanceSprite.draw(batch);
+					if (animationRoll > 3)
+						animationRoll = 0;
+				}
 			}
-			
-			
-			iceLanceSprite.setPosition(this.x1, this.y1);
+		
 			if (floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)] instanceof Enemy){
-				floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)].setHealth(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE].getHealth() - 20);
+				floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)].setHealth(floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)].getHealth() - 20);
 				((Enemy) floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][(int) (iceLanceSprite.getY() / TILE_SIZE)]).gotAttacked = true;
 				damageText = "-20";
 				damageFont.draw(batch, damageText, iceLanceSprite.getX() + 8, iceLanceSprite.getY() + 42);
@@ -486,7 +549,7 @@ public class Player {
 					((Enemy) floor.characterLocations[(int) (iceLanceSprite.getX() / TILE_SIZE)][this.y1 / TILE_SIZE]).slowTurn = true;
 					damageText = "Slowed";
 					damageFont.setColor(Color.GREEN);
-					damageFont.draw(batch, damageText, iceLanceSprite.getX() + 8, iceLanceSprite.getY() + 60);
+					damageFont.draw(batch, damageText, iceLanceSprite.getX() - 16, iceLanceSprite.getY() + 60);
 					damageFont.setColor(Color.RED);
 				}
 			}
@@ -504,7 +567,7 @@ public class Player {
 			this.setMana(this.getMana() - 30);
 			regenFont.setColor(Color.GREEN);
 			regenText = "+30";
-			regenFont.draw(batch, regenText, this.x1 + 4, this.y2 + 16);
+			regenFont.draw(batch, regenText, this.x1 + 4, this.y1 + 16);
 		}
 	}
 	
@@ -512,7 +575,7 @@ public class Player {
 	private void setUpSpells(){
 		for(int i = 0; i < 4; i++){
 			fireballAnimation[i] = new TextureRegion(fireballTexture, i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
-			iceLanceAnimation[i] = new TextureRegion(fireballTexture, i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
+			iceLanceAnimation[i] = new TextureRegion(iceLanceTexture, i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
 		}
 	}
 	
