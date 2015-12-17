@@ -93,7 +93,7 @@ public class HighScore extends JPanel implements ActionListener {
 	        "jdbc:mysql://hoolahanphotography.com:3306/dungeoncrawler", "gameuser", "gamepass");
 
 	    Statement m_Statement = m_Connection.createStatement();
-	    String query = "SELECT * FROM highscores ORDER BY score DESC";
+	    String query = "SELECT * FROM highscores ORDER BY score DESC LIMIT 10";
 	    
 	    ResultSet m_ResultSet = m_Statement.executeQuery(query);
 	    while (m_ResultSet.next()) {
